@@ -8,9 +8,10 @@ import { ConsumptionSheetsModule } from './consumption-sheets/consumption-sheets
 import { PatientsModule } from './patients/patients.module';
 import { ConsumptionDetailsModule } from './consumption-details/consumption-details.module';
 import { UsersModule } from './users/users.module';
-
+import { TypeOrmModule } from '@nestjs/typeorm';
+import ormConfig from '../ormconfig'
 @Module({
-  imports: [RoomsModule, ProductsModule, StaffModule, ConsumptionSheetsModule, PatientsModule, ConsumptionDetailsModule, UsersModule],
+  imports: [TypeOrmModule.forRoot(ormConfig),RoomsModule, ProductsModule, StaffModule, ConsumptionSheetsModule, PatientsModule, ConsumptionDetailsModule, UsersModule],
   controllers: [AppController],
   providers: [AppService],
 })
