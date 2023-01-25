@@ -12,9 +12,13 @@ export class CreateConsumptionSheetDto {
     admission_date: Date;
 
     @IsDate()
-    discharge_date: Date;
+    discharge_date?: Date;
 
     @IsString()
     @IsNotEmpty()
     diagnosis: string
+
+    @IsString()
+    @IsNotEmpty()
+    doctor: string
 }
