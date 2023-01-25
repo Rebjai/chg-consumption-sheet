@@ -1,21 +1,24 @@
-import { ConsumptionDetail } from 'src/consumption-details/entities/consumption-detail.entity';
-import { Patient } from 'src/patients/entities/patient.entity';
-import { Room } from 'src/rooms/entities/room.entity';
+import { ConsumptionDetail } from './../../consumption-details/entities/consumption-detail.entity';
+import { Room } from './../../rooms/entities/room.entity';
+import { CHGBaseEntity } from './../../common/entities/chgBaseEntity.entity';
+import { Patient } from './../../patients/entities/patient.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, OneToMany, UpdateDateColumn, CreateDateColumn } from 'typeorm';
 
 @Entity()
-export class ConsumptionSheet {
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class ConsumptionSheet extends CHGBaseEntity{
     @OneToOne(type => Patient)
     patient: Patient;
 
     @ManyToOne(type => Room, room => room.consumptionSheets)
     room: Room;
-
+    
+    @Column()
+    diagnosis: string;
 
     @Column()
+    doctor: string;
+    
+    @Column({nullable: true})
     dischargeDate: Date;
 
     @Column()
@@ -23,10 +26,4 @@ export class ConsumptionSheet {
 
     @OneToMany(type => ConsumptionDetail, consumption => consumption.consumptionSheet)
     consumptions: ConsumptionDetail[]
-
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @UpdateDateColumn()
-    updatedAt: Date;
 }

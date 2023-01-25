@@ -1,11 +1,9 @@
-import { User } from 'src/users/entities/user.entity';
+import { CHGBaseEntity } from './../../common/entities/chgBaseEntity.entity';
+import { User } from './../../users/entities/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-export class Staff {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Staff extends CHGBaseEntity {
   @Column()
   firstName: string;
 
@@ -18,9 +16,4 @@ export class Staff {
   @ManyToOne(type => User)
   user: User;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

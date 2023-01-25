@@ -1,10 +1,9 @@
-import { ConsumptionSheet } from 'src/consumption-sheets/entities/consumption-sheet.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { ConsumptionSheet } from './../../consumption-sheets/entities/consumption-sheet.entity';
+import { CHGBaseEntity } from './../../common/entities/chgBaseEntity.entity';
+import { Entity, Column, OneToMany, } from 'typeorm';
 
 @Entity()
-export class Room {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class Room extends CHGBaseEntity{
 
   @Column()
   name: string;
@@ -13,11 +12,6 @@ export class Room {
   status: string;
 
   @OneToMany( type => ConsumptionSheet, consumptionSheet => consumptionSheet.room)
-  consumptionSheets: ConsumptionSheet
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
+  consumptionSheets?: ConsumptionSheet
+  
 }
