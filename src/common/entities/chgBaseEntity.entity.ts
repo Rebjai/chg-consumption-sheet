@@ -1,4 +1,4 @@
-import { CreateDateColumn, Entity, EntitySchema, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { CreateDateColumn, DeleteDateColumn, Entity, EntitySchema, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class CHGBaseEntity {
@@ -10,4 +10,7 @@ export class CHGBaseEntity {
 
     @UpdateDateColumn()
     updatedAt: Date;
+    
+    @DeleteDateColumn()
+    deletedAt: Date;
 }

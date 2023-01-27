@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsString } from "class-validator";
+import { IsBoolean, IsDate, IsDateString, IsNotEmpty, IsString } from "class-validator";
 
 export class CreatePatientDto {
     @IsString()
@@ -12,7 +12,9 @@ export class CreatePatientDto {
     @IsString()
     @IsNotEmpty()
     second_surname: string;
-
-    @IsDate()
+    
+    @IsDateString()
+    @IsNotEmpty()
     date_of_birth: Date
+
 }
