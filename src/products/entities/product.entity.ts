@@ -1,19 +1,12 @@
+import { CHGBaseEntity } from './../../common/entities/chgBaseEntity.entity';
 import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn } from 'typeorm';
 
 @Entity()
-export class Product {
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class Product extends CHGBaseEntity{
     @Column()
-    productName: string;
+    name: string;
 
     @Column()
     price: number;
 
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @UpdateDateColumn()
-    updatedAt: Date;
 }
