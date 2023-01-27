@@ -12,5 +12,5 @@ export class CHGBaseEntity {
     updatedAt: Date;
     
     @DeleteDateColumn()
-    deletedAt: Date;
+    deletedAt?: Date;
 }

@@ -1,12 +1,13 @@
 import { PaginationDto } from './../common/dto/pagination.dto';
 import { QueryRoomDto } from './dto/query-room.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Repository } from 'typeorm';
 import { Room } from './entities/room.entity';
 import { validate } from 'class-validator';
+import { RoomStatus } from './enums/room-status.enum';
 
 @Injectable()
 export class RoomsService {
@@ -20,8 +21,8 @@ export class RoomsService {
     if (errors.length > 0) {
       throw new HttpException({ message: 'Invalid data', errors }, HttpStatus.BAD_REQUEST);
     }
-    if (createRoomDto.name == ''){
-      
+    if (createRoomDto.name == '') {
+
     }
     const room = new Room();
     room.name = createRoomDto.name;
@@ -30,13 +31,18 @@ export class RoomsService {
     return await this.roomsRepository.save(room);
   }
 
-  async findAll(query: QueryRoomDto, pagination?:PaginationDto) {
-    const rooms:Room[] = await this.roomsRepository.find({where: query, skip:pagination.skip, take: pagination.take})
+  async findAll(query: QueryRoomDto, pagination?: PaginationDto) {
+    const rooms: Room[] = await this.roomsRepository.find({ where: query, skip: pagination.skip, take: pagination.take })
     return rooms;
   }
 
   async findOne(id: number) {
-    return await this.roomsRepository.findOneBy({ id });
+    const room = await this.roomsRepository.findOneBy({ id });
+    if (!room) {
+      throw new NotFoundException("Room not found");
+
+    }
+    return room
   }
 
   async update(id: number, updateRoomDto: UpdateRoomDto) {
@@ -57,5 +63,15 @@ export class RoomsService {
 
   remove(id: number) {
     return `This action removes a #${id} room`;
+  }
+
+  async updateRoomStatus(id: number, status: RoomStatus) {
+    const room = await this.roomsRepository.findOneByOrFail({ id })
+    if (room.status == status) {
+      throw new BadRequestException("The room has that status already");
+      
+    }
+    room.status = status
+    return await this.roomsRepository.save(room)
   }
 }

@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsString } from "class-validator";
+import { IsDate, IsDateString, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateConsumptionSheetDto {
     @IsNotEmpty()
@@ -7,12 +7,9 @@ export class CreateConsumptionSheetDto {
     @IsNotEmpty()
     room_id: number;
 
-    @IsDate()
+    @IsDateString()
     @IsNotEmpty()
     admission_date: Date;
-
-    @IsDate()
-    discharge_date?: Date;
 
     @IsString()
     @IsNotEmpty()

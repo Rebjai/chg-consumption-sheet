@@ -1,5 +1,5 @@
-import { RoomType } from './../rooms/enums/room=type.enum';
-import { RoomStatus } from './../rooms/enums/room=status.enum';
+import { RoomType } from '../rooms/enums/room-type.enum';
+import { RoomStatus } from '../rooms/enums/room-status.enum';
 import { Patient } from './../patients/entities/patient.entity';
 import { Room } from './../rooms/entities/room.entity';
 import { RoomsService } from './../rooms/rooms.service';
@@ -35,6 +35,7 @@ describe('ConsumptionSheetsService', () => {
     dateOfBirth: new Date(1990, 1, 1),
     createdAt: now,
     updatedAt: now,
+    active:true
   }]
   const patientsServiceMock = {
     findOne: jest.fn().mockImplementation((id: number): Promise<Patient> => Promise.resolve(patiens.find((val) => val.id == id)))

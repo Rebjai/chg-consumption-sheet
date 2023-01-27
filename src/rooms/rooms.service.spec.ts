@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Room } from './entities/room.entity';
 import { RoomsService } from './rooms.service';
-import { RoomStatus } from './enums/room=status.enum';
-import { RoomType } from './enums/room=type.enum';
+import { RoomStatus } from './enums/room-status.enum';
+import { RoomType } from './enums/room-type.enum';
 import { BadRequestException } from '@nestjs/common';
 
 

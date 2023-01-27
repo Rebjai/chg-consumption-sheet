@@ -1,4 +1,5 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType, OmitType } from '@nestjs/mapped-types';
 import { CreateConsumptionSheetDto } from './create-consumption-sheet.dto';
 
-export class UpdateConsumptionSheetDto extends PartialType(CreateConsumptionSheetDto) {}
+export class UpdateConsumptionSheetDto extends PartialType(OmitType(CreateConsumptionSheetDto, ['patient_id'] as const)) {
+}
