@@ -1,3 +1,5 @@
+import { PaginationDto } from './../common/dto/pagination.dto';
+import { QueryRoomDto } from './dto/query-room.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
@@ -18,14 +20,19 @@ export class RoomsService {
     if (errors.length > 0) {
       throw new HttpException({ message: 'Invalid data', errors }, HttpStatus.BAD_REQUEST);
     }
+    if (createRoomDto.name == ''){
+      
+    }
     const room = new Room();
     room.name = createRoomDto.name;
     room.status = createRoomDto.status;
+    room.type = createRoomDto.type;
     return await this.roomsRepository.save(room);
   }
 
-  async findAll() {
-    return await this.roomsRepository.find();
+  async findAll(query: QueryRoomDto, pagination?:PaginationDto) {
+    const rooms:Room[] = await this.roomsRepository.find({where: query, skip:pagination.skip, take: pagination.take})
+    return rooms;
   }
 
   async findOne(id: number) {
@@ -43,6 +50,7 @@ export class RoomsService {
     }
     room.name = updateRoomDto.name;
     room.status = updateRoomDto.status;
+    room.type = updateRoomDto.type;
     return await this.roomsRepository.save(room);
   }
 
