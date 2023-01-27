@@ -1,3 +1,5 @@
+import { RoomType } from './../rooms/enums/room=type.enum';
+import { RoomStatus } from './../rooms/enums/room=status.enum';
 import { Patient } from './../patients/entities/patient.entity';
 import { Room } from './../rooms/entities/room.entity';
 import { RoomsService } from './../rooms/rooms.service';
@@ -20,7 +22,8 @@ describe('ConsumptionSheetsService', () => {
   }
   const rooms: Room[] = [{
     id: 1, name: '420',
-    status: "disponible",
+    status: RoomStatus.AVAILABLE,
+    type: RoomType.CLASSIC,
     createdAt: now,
     updatedAt: now,
   }]
