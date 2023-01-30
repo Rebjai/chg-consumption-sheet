@@ -1,5 +1,8 @@
+import { StaffService } from './../staff/staff.service';
+import { ProductsService } from './../products/products.service';
+import { ConsumptionSheetsService } from './../consumption-sheets/consumption-sheets.service';
 import { ConsumptionDetail } from './entities/consumption-detail.entity';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateConsumptionDetailDto } from './dto/create-consumption-detail.dto';
 import { UpdateConsumptionDetailDto } from './dto/update-consumption-detail.dto';
@@ -7,28 +10,48 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class ConsumptionDetailsService {
-  constructor(@InjectRepository(ConsumptionDetail) private consumptionDetailRepository: Repository<ConsumptionDetail>,) {
+  constructor(
+    @InjectRepository(ConsumptionDetail) private consumptionDetailRepository: Repository<ConsumptionDetail>,
+    @Inject(ConsumptionSheetsService) private consumptionSheetsService: ConsumptionSheetsService,
+    @Inject(ProductsService) private productsService: ProductsService,
+    @Inject(StaffService) private staffService: StaffService,
+  ) {
   }
 
-  create(createConsumptionDetailDto: CreateConsumptionDetailDto) {
-    const consumptionDetail = this.consumptionDetailRepository.save(createConsumptionDetailDto)
+  async create(consumptionId: number, createConsumptionDetailDto: CreateConsumptionDetailDto) {
+    const consumptionSheet = await this.consumptionSheetsService.findOne(consumptionId)
+    const product = await this.productsService.findOne(createConsumptionDetailDto.product_id)
+    const staff = await this.staffService.findOne(createConsumptionDetailDto.staff_id)
+    const consumptionDetail = new ConsumptionDetail()
+    consumptionDetail.consumptionSheet = consumptionSheet
+    consumptionDetail.product = product
+    consumptionDetail.staff = staff
+    consumptionDetail.quantity = createConsumptionDetailDto.quantity
+    consumptionDetail.total = product.price * createConsumptionDetailDto.quantity
+    return await this.consumptionDetailRepository.save(consumptionDetail)
+
+    // consumptionSheet.consumptions.push(consumptionDetail)
+    // return consumptionDetail;
+  }
+
+  async findAll(consumptionSheetId: number) {
+    return this.consumptionDetailRepository.find({ where: { consumptionSheetId } });
+  }
+
+  async findOne(id: number) {
+    const consumptionDetail = await this.consumptionDetailRepository.findOneBy({ id })
+    if (!consumptionDetail)
+      throw new NotFoundException("Consumption Detail not found");
+
     return consumptionDetail;
   }
 
-  findAll() {
-    return this.consumptionDetailRepository.find();
-  }
-
-  findOne(id: number) {
-    return this.consumptionDetailRepository.findOneBy({id});
-  }
-
   async update(id: number, updateConsumptionDetailDto: UpdateConsumptionDetailDto) {
-    const consumptionDetail =  await this.consumptionDetailRepository.update({id}, updateConsumptionDetailDto)
+    const consumptionDetail = await this.consumptionDetailRepository.update({ id }, updateConsumptionDetailDto)
     return consumptionDetail;
   }
 
   async remove(id: number) {
-    return await this.consumptionDetailRepository.delete({id});
+    return await this.consumptionDetailRepository.delete({ id });
   }
 }

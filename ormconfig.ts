@@ -17,6 +17,7 @@ const ormConfig : DataSourceOptions | TypeOrmModuleOptions = {
     database: 'chg_consumption_sheet',
     entities: [User, Room, Patient, Staff, Product, ConsumptionDetail, ConsumptionSheet],
     synchronize: true,
+    // dropSchema:true,
 }
 export default ormConfig
 export { ormConfig }

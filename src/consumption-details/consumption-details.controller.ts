@@ -3,18 +3,19 @@ import { ConsumptionDetailsService } from './consumption-details.service';
 import { CreateConsumptionDetailDto } from './dto/create-consumption-detail.dto';
 import { UpdateConsumptionDetailDto } from './dto/update-consumption-detail.dto';
 
-@Controller('consumption-details')
+@Controller('consumption-sheets/:consumptionSheet/consumption-details')
 export class ConsumptionDetailsController {
-  constructor(private readonly consumptionDetailsService: ConsumptionDetailsService) {}
+  constructor(private readonly consumptionDetailsService: ConsumptionDetailsService) { }
 
   @Post()
-  create(@Body() createConsumptionDetailDto: CreateConsumptionDetailDto) {
-    return this.consumptionDetailsService.create(createConsumptionDetailDto);
+  create(@Param('consumptionSheet') consumptionSheet: string, @Body() createConsumptionDetailDto: CreateConsumptionDetailDto) {
+
+    return this.consumptionDetailsService.create(+consumptionSheet, createConsumptionDetailDto);
   }
 
   @Get()
-  findAll() {
-    return this.consumptionDetailsService.findAll();
+  findAll(@Param('consumptionSheet') consumptionSheet: string) {
+    return this.consumptionDetailsService.findAll(+consumptionSheet);
   }
 
   @Get(':id')

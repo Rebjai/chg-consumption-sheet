@@ -17,8 +17,8 @@ export class CreateConsumptionDetailDto {
     @IsNumber()
     quantity: number;
     
-    @IsNotEmpty()
-    @IsNumber()
-    total: number;
+    // @IsNotEmpty()
+    // @IsNumber()
+    // total: number;
     
 }
