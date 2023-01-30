@@ -1,26 +1,54 @@
-import { Injectable } from '@nestjs/common';
+import { Staff } from './entities/staff.entity';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class StaffService {
-  create(createStaffDto: CreateStaffDto) {
-    return 'This action adds a new staff';
+  constructor(@InjectRepository(Staff) private staffRepository: Repository<Staff>) { }
+
+
+  async create(createStaffDto: CreateStaffDto) {
+    const staff = new Staff()
+    staff.name = createStaffDto.name
+    staff.secondSurname = createStaffDto.second_surname
+    staff.firstSurname = createStaffDto.first_surname
+    staff.jobTitle = createStaffDto.job_title
+    staff.dateOfBirth = createStaffDto.date_of_birth
+    staff.telephoneNumber = createStaffDto.telephone_number
+    // if (createStaffDto.user_id)
+    // staff.user = 
+    return await this.staffRepository.save(staff)
   }
 
-  findAll() {
-    return `This action returns all staff`;
+  async findAll(): Promise<Staff[]> {
+    return await this.staffRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} staff`;
+  async findOne(id: number): Promise<Staff> {
+    const staff = await this.staffRepository.findOneBy({ id })
+    if (!staff)
+      throw new NotFoundException("Staff member not found");
+
+    return staff;
   }
 
-  update(id: number, updateStaffDto: UpdateStaffDto) {
-    return `This action updates a #${id} staff`;
+  async update(id: number, updateStaffDto: UpdateStaffDto) {
+    const staff = await this.staffRepository.findOneBy({ id })
+    if (!staff)
+      throw new NotFoundException("Staff member not found"); 
+    staff.name = updateStaffDto.name
+    staff.secondSurname = updateStaffDto.second_surname
+    staff.firstSurname = updateStaffDto.first_surname
+    staff.jobTitle = updateStaffDto.job_title
+    staff.dateOfBirth = updateStaffDto.date_of_birth
+    staff.telephoneNumber = updateStaffDto.telephone_number
+    return await this.staffRepository.save(staff);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} staff`;
+  async remove(id: number) {
+    return await this.staffRepository.softDelete({id});
   }
 }

@@ -5,15 +5,24 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Up
 @Entity()
 export class Staff extends CHGBaseEntity {
   @Column()
-  firstName: string;
+  name: string;
 
   @Column()
-  lastName: string;
+  firstSurname: string;
+  
+  @Column()
+  secondSurname: string;
+
+  @Column()
+  telephoneNumber: string;
 
   @Column()
   jobTitle: string;
 
+  @Column()
+  dateOfBirth: Date
+
   @ManyToOne(type => User)
-  user: User;
+  user?: User;
 
 }

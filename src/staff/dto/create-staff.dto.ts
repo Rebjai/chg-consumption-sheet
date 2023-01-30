@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, IsDate } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsOptional, IsDateString } from 'class-validator';
 
 export class CreateStaffDto {
     @IsString()
@@ -12,8 +12,12 @@ export class CreateStaffDto {
     @IsString()
     @IsNotEmpty()
     name: string;
+
+    @IsString()
+    @IsNotEmpty()
+    job_title: string;
     
-    @IsDate()
+    @IsDateString()
     @IsNotEmpty()
     date_of_birth: Date
     
@@ -22,7 +26,7 @@ export class CreateStaffDto {
     telephone_number: string
 
     @IsNumber()
-    @IsNotEmpty()
-    user_id: number;
+    @IsOptional()
+    user_id?: number;
 }
 
