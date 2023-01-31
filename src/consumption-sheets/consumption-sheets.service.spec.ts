@@ -1,5 +1,5 @@
+import { RoomStatus } from './../rooms/enums/room-status.enum';
 import { RoomType } from '../rooms/enums/room-type.enum';
-import { RoomStatus } from '../rooms/enums/room-status.enum';
 import { Patient } from './../patients/entities/patient.entity';
 import { Room } from './../rooms/entities/room.entity';
 import { RoomsService } from './../rooms/rooms.service';
@@ -42,6 +42,7 @@ describe('ConsumptionSheetsService', () => {
   }
   const roomsServiceMock = {
     findOne: jest.fn().mockImplementation((id: number): Promise<Room> => Promise.resolve(rooms.find((val) => val.id == id))),
+    updateRoomStatus: jest.fn().mockImplementation((id: number, status: RoomStatus): Promise<Room> => Promise.resolve(rooms.find((val) => val.id == id))),
   }
   const consumptionSheetRepositoryMock = {
     save: jest.fn((consumptionSheet: ConsumptionSheet) => consumptionSheet)
@@ -75,7 +76,7 @@ describe('ConsumptionSheetsService', () => {
   it('should create a new entity', async () => {
     const created = await service.create(newConsumptionSheet)
     expect(created).toBeInstanceOf(ConsumptionSheet)
-    expect(roomsServiceMock.findOne).toHaveBeenCalled()
+    expect(roomsServiceMock.updateRoomStatus).toHaveBeenCalled()
     expect(patientsServiceMock.findOne).toHaveBeenCalled()
     expect(consumptionSheetRepositoryMock.save).toHaveBeenCalled()
   });
