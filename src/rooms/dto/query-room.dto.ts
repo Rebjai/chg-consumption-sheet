@@ -12,10 +12,4 @@ export class QueryRoomDto {
     @IsOptional()
     @IsEnum(RoomType)
     type?: RoomType;
-
-    @IsOptional()
-    skip?: number;
-
-    @IsOptional()
-    take?: number;
 }

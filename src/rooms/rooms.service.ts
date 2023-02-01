@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Room } from './entities/room.entity';
 import { validate } from 'class-validator';
 import { RoomStatus } from './enums/room-status.enum';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class RoomsService {
@@ -17,7 +18,8 @@ export class RoomsService {
   ) { }
 
   async create(createRoomDto: CreateRoomDto) {
-    const errors = await validate(createRoomDto);
+    
+    const errors = await validate(plainToInstance(CreateRoomDto, createRoomDto));
     if (errors.length > 0) {
       throw new HttpException({ message: 'Invalid data', errors }, HttpStatus.BAD_REQUEST);
     }
@@ -31,7 +33,7 @@ export class RoomsService {
     return await this.roomsRepository.save(room);
   }
 
-  async findAll(query: QueryRoomDto, pagination?: PaginationDto) {
+  async findAll(query: QueryRoomDto, pagination: PaginationDto = new PaginationDto()) {
     const rooms: Room[] = await this.roomsRepository.find({ where: query, skip: pagination.skip, take: pagination.take })
     return rooms;
   }
@@ -48,11 +50,11 @@ export class RoomsService {
   async update(id: number, updateRoomDto: UpdateRoomDto) {
     const room = await this.roomsRepository.findOneBy({ id });
     if (!room) {
-      throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Room not found');
     }
-    const errors = await validate(updateRoomDto);
+    const errors = await validate(plainToInstance(UpdateRoomDto, updateRoomDto));
     if (errors.length > 0) {
-      throw new HttpException({ message: 'Invalid data', errors }, HttpStatus.BAD_REQUEST);
+      throw new BadRequestException({ message: 'Invalid data', errors });
     }
     room.name = updateRoomDto.name;
     room.status = updateRoomDto.status;
@@ -66,7 +68,10 @@ export class RoomsService {
   }
 
   async updateRoomStatus(id: number, status: RoomStatus) {
-    const room = await this.roomsRepository.findOneByOrFail({ id })
+    const room = await this.roomsRepository.findOneBy({ id })
+    if (!room) {
+      throw new NotFoundException('Room not found');
+    }
     if (room.status == status) {
       throw new BadRequestException("The room has that status already");
       
