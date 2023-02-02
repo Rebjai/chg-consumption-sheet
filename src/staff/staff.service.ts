@@ -1,5 +1,7 @@
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 import { Staff } from './entities/staff.entity';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
@@ -11,6 +13,10 @@ export class StaffService {
 
 
   async create(createStaffDto: CreateStaffDto) {
+    const errors = await validate(plainToInstance(CreateStaffDto, createStaffDto))
+    if (errors.length > 1)
+      throw new UnprocessableEntityException()
+
     const staff = new Staff()
     staff.name = createStaffDto.name
     staff.secondSurname = createStaffDto.second_surname
@@ -38,7 +44,10 @@ export class StaffService {
   async update(id: number, updateStaffDto: UpdateStaffDto) {
     const staff = await this.staffRepository.findOneBy({ id })
     if (!staff)
-      throw new NotFoundException("Staff member not found"); 
+      throw new NotFoundException("Staff member not found");
+    const errors = await validate(plainToInstance(UpdateStaffDto, updateStaffDto))
+    if (errors.length > 1)
+      throw new UnprocessableEntityException()
     staff.name = updateStaffDto.name
     staff.secondSurname = updateStaffDto.second_surname
     staff.firstSurname = updateStaffDto.first_surname
@@ -49,6 +58,6 @@ export class StaffService {
   }
 
   async remove(id: number) {
-    return await this.staffRepository.softDelete({id});
+    return await this.staffRepository.softDelete({ id });
   }
 }
