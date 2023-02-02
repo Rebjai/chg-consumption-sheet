@@ -13,7 +13,7 @@ export class CreatePatientDto {
     @IsNotEmpty()
     second_surname: string;
     
-    @IsDateString()
+    @IsDate()
     @IsNotEmpty()
     date_of_birth: Date
 

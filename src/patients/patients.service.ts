@@ -1,5 +1,7 @@
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
 import { Patient } from './entities/patient.entity';
@@ -13,6 +15,10 @@ export class PatientsService {
   ) { }
 
   async create(createPatientDto: CreatePatientDto) {
+    const errors = await validate(plainToInstance(CreatePatientDto, createPatientDto))
+    if (errors.length > 0)
+      throw new BadRequestException({ errors })
+
     const patient = new Patient()
     patient.name = createPatientDto.name;
     patient.firstSurname = createPatientDto.first_surname;
@@ -41,6 +47,12 @@ export class PatientsService {
 
   async update(id: number, updatePatientDto: UpdatePatientDto) {
     const patient = await this.patientsRepository.findOneBy({ id });
+    const errors = await validate(plainToInstance(UpdatePatientDto, updatePatientDto))
+    if (!patient) {
+      throw new NotFoundException()
+    }
+    if (errors.length > 0)
+      throw new BadRequestException({ errors })
     patient.name = updatePatientDto.name;
     patient.firstSurname = updatePatientDto.first_surname;
     patient.secondSurname = updatePatientDto.second_surname;
@@ -52,6 +64,6 @@ export class PatientsService {
   async remove(id: number) {
     // const patient = await this.patientsRepository.findOneBy({id})
     // return await this.patientsRepository.softRemove(patient);
-    return await this.patientsRepository.softRemove({id});
+    return await this.patientsRepository.softRemove({ id });
   }
 }
