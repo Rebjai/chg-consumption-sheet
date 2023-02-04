@@ -6,10 +6,16 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, OneToMany,
 
 @Entity()
 export class ConsumptionSheet extends CHGBaseEntity{
+    @Column()
+    patientId: number
+    
     @OneToOne(type => Patient, {eager: true})
     @JoinColumn()
     patient: Patient;
-
+    
+    @Column()
+    roomId: number
+    
     @ManyToOne(type => Room, room => room.consumptionSheets, {eager: true})
     room: Room;
     
@@ -26,5 +32,5 @@ export class ConsumptionSheet extends CHGBaseEntity{
     admissionDate: Date;
 
     @OneToMany(type => ConsumptionDetail, consumption => consumption.consumptionSheet)
-    consumptions: ConsumptionDetail[]
+    consumptions?: ConsumptionDetail[]
 }

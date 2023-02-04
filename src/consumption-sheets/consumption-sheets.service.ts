@@ -1,7 +1,8 @@
+import { plainToInstance } from 'class-transformer';
 import { RoomStatus } from './../rooms/enums/room-status.enum';
 import { PatientsService } from './../patients/patients.service';
 import { RoomsService } from './../rooms/rooms.service';
-import { HttpException, Inject, Injectable, HttpStatus, NotFoundException } from '@nestjs/common';
+import { HttpException, Inject, Injectable, HttpStatus, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { Repository } from 'typeorm';
@@ -21,9 +22,9 @@ export class ConsumptionSheetsService {
   ) { }
 
   async create(createConsumptionSheetDto: CreateConsumptionSheetDto): Promise<ConsumptionSheet> {
-    const errors = await validate(createConsumptionSheetDto);
+    const errors = await validate(plainToInstance(CreateConsumptionSheetDto, createConsumptionSheetDto));
     if (errors.length > 0) {
-      throw new HttpException({ message: 'Invalid data', errors }, HttpStatus.BAD_REQUEST);
+      throw new UnprocessableEntityException;
     }
     const consumptionSheet = new ConsumptionSheet();
     consumptionSheet.patient = await this.patientsService.findOne(createConsumptionSheetDto.patient_id);
@@ -43,13 +44,20 @@ export class ConsumptionSheetsService {
       const consumptionSheet = await this.consumptionSheetRepository.findOneByOrFail({ id });
       return consumptionSheet
     } catch (error) {
-        throw new NotFoundException("Consumption sheet not found");
+      throw new NotFoundException("Consumption sheet not found");
     }
   }
 
   async update(id: number, updateConsumptionSheetDto: UpdateConsumptionSheetDto) {
-    const consumptionSheet = await this.consumptionSheetRepository.findOneByOrFail({ id })
-    if (updateConsumptionSheetDto.room_id !== consumptionSheet.room.id) {
+    const consumptionSheet = await this.consumptionSheetRepository.findOneBy({ id })
+    if (!consumptionSheet) {
+      throw new NotFoundException();
+    }
+    const errors = await validate(plainToInstance(UpdateConsumptionSheetDto, updateConsumptionSheetDto))
+    if (errors.length>0) {
+      throw new UnprocessableEntityException()
+    }
+    if (updateConsumptionSheetDto.room_id !== consumptionSheet.roomId) {
       this.roomsService.updateRoomStatus(consumptionSheet.room.id, RoomStatus.AVAILABLE)
       consumptionSheet.room = await this.roomsService.updateRoomStatus(updateConsumptionSheetDto.room_id, RoomStatus.OCCUPIED)
     }

@@ -7,7 +7,7 @@ export class CreateConsumptionSheetDto {
     @IsNotEmpty()
     room_id: number;
 
-    @IsDateString()
+    @IsDate()
     @IsNotEmpty()
     admission_date: Date;
 
