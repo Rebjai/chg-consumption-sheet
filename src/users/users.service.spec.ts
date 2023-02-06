@@ -147,4 +147,8 @@ describe('UsersService', () => {
     expect(usersRepositoryMock.find).toHaveBeenCalledWith()
     expect(found.length).toBe(users.length)
   })
+  it('should FIND by USERNAME', async () => {
+    const found : User = await service.findOneByUsername(TEST_EMAILS.USER) 
+    expect(found.email).toBe(TEST_EMAILS.USER)
+  })
 });
