@@ -1,23 +1,62 @@
-import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(@InjectRepository(User) private usersRepository: Repository<User>) { }
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    await this.emailIsUnique(createUserDto.email)
+    const errors = await validate(plainToInstance(CreateUserDto, createUserDto))
+    if (errors.length > 0)
+      throw new UnprocessableEntityException({ errors });
+    if (createUserDto.password !== createUserDto.password_confirmation)
+      throw new UnprocessableEntityException({
+        errors: {
+          password_confirmation: 'Passwords doesn\'t match'
+        }
+      });
+    const user = new User()
+    user.email = createUserDto.email
+    user.password = createUserDto.password
+    return this.usersRepository.save(user);
+  }
+  async emailIsUnique(email: string): Promise<Boolean> {
+    const userExists = await this.usersRepository.findOneBy({ email })
+    if (userExists)
+      throw new UnprocessableEntityException();
+    return !userExists
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() : Promise<User[]> {
+    return this.usersRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number): Promise<User> {
+    const user = this.usersRepository.findOneBy({ id })
+    if (!user)
+      throw new NotFoundException();
+    return user
   }
+  // async findOneByUsername(username: string): Promise<User> {
+  //   const user = await this.usersRepository.findOneBy({ email: username })
+  //   if (!user)
+  //     throw new NotFoundException();
+  //   return user
+  // }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.findOne(id)
+    const emailIsUn1que =await this.emailIsUnique(updateUserDto.email)
+    user.email = updateUserDto.email
+
+    this.usersRepository.save(user)
+    return user;
   }
 
   remove(id: number) {

@@ -1,7 +1,8 @@
+import { CHGBaseEntity } from './../../common/entities/chgBaseEntity.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-export class User {
+export class User extends CHGBaseEntity{
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -14,16 +15,5 @@ export class User {
   @Column()
   role: string;
 
-  @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }
 
