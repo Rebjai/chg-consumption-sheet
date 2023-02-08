@@ -15,12 +15,6 @@ export class UsersService {
     const errors = await validate(plainToInstance(CreateUserDto, createUserDto))
     if (errors.length > 0)
       throw new UnprocessableEntityException({ errors });
-    if (createUserDto.password !== createUserDto.password_confirmation)
-      throw new UnprocessableEntityException({
-        errors: {
-          password_confirmation: 'Passwords doesn\'t match'
-        }
-      });
     const user = new User()
     user.email = createUserDto.email
     user.password = createUserDto.password
@@ -57,6 +51,12 @@ export class UsersService {
 
     this.usersRepository.save(user)
     return user;
+  }
+
+  async updateRtHash(userId: number, rt: string): Promise<void> {
+    const user = await this.findOne(userId)
+    user.rt = rt
+    this.usersRepository.save(user)
   }
 
   remove(id: number) {
