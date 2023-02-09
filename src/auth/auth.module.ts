@@ -8,12 +8,10 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ChgHashService } from "./Interfaces/chg-hash-service.Interface";
+import jwtConfig from './jwt.config';
 @Module({
   controllers: [AuthController],
-  imports: [UsersModule, PassportModule, JwtModule.register({
-    secret: 'YES',
-    signOptions: { expiresIn: '3000s' }
-  })],
+  imports: [UsersModule, PassportModule, JwtModule.registerAsync(jwtConfig)],
   providers: [AuthService, BcryptHashService, LocalStrategy, JwtStrategy]
 })
 export class AuthModule { }

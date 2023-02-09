@@ -10,9 +10,10 @@ import { ConsumptionDetailsModule } from './consumption-details/consumption-deta
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import ormConfig from '../ormconfig'
+import {ormAsyncConfig} from '../ormconfig'
+import { ConfigModule } from "@nestjs/config";
 @Module({
-  imports: [TypeOrmModule.forRoot(ormConfig),RoomsModule, ProductsModule, StaffModule, ConsumptionSheetsModule, PatientsModule, ConsumptionDetailsModule, UsersModule, AuthModule],
+  imports: [ConfigModule.forRoot({isGlobal: true}),TypeOrmModule.forRootAsync(ormAsyncConfig),RoomsModule, ProductsModule, StaffModule, ConsumptionSheetsModule, PatientsModule, ConsumptionDetailsModule, UsersModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

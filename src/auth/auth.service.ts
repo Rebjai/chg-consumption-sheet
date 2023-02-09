@@ -8,11 +8,14 @@ import { UsersService } from '../users/users.service';
 import ChgHashService from './Interfaces/chg-hash-service.Interface';
 import { JwtService } from '@nestjs/jwt';
 import BcryptHashService from './bcrypt-hash.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(private usersService: UsersService,
-    @Inject(BcryptHashService) private hashService: ChgHashService,
+    @Inject(
+      BcryptHashService) private hashService: ChgHashService,
+    private configService: ConfigService,
     private jwtService: JwtService) { }
 
   async validateUser(username: string, pass: string): Promise<User | null> {
@@ -35,9 +38,9 @@ export class AuthService {
   }
 
   async login(user: any) {
-    console.log({user});
-    
-    const payload = { username: user.email, sub: user.id};
+    console.log({ user });
+
+    const payload = { email: user.email, sub: user.id, role: user.role };
     return {
       access_token: this.jwtService.sign(payload),
     };
@@ -47,7 +50,7 @@ export class AuthService {
     const newUser = { ...registerDto }
     newUser.password = await this.hashService.hash(registerDto.password)
     const matching = await this.hashService.compare(registerDto.password_confirmation, newUser.password)
-    newUser.password_confirmation = matching? newUser.password:registerDto.password_confirmation
+    newUser.password_confirmation = matching ? newUser.password : registerDto.password_confirmation
     if (registerDto.password !== registerDto.password_confirmation)
       throw new UnprocessableEntityException({
         errors: {
@@ -68,13 +71,11 @@ export class AuthService {
 
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(jwtPayload, {
-        secret: 'YES',
-        // secret: this.config.get<string>('AT_SECRET'),
+        secret: this.configService.get<string>('SECRET'),
         expiresIn: '15m',
       }),
       this.jwtService.signAsync(jwtPayload, {
-        secret: 'YES',
-        // secret: this.config.get<string>('RT_SECRET'),
+        secret: this.configService.get<string>('RT_SECRET'),
         expiresIn: '7d',
       }),
     ]);
