@@ -4,7 +4,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe 
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('rooms')
 @Controller('rooms')
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}

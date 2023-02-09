@@ -1,8 +1,10 @@
+import { ApiTags } from '@nestjs/swagger';
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ConsumptionSheetsService } from './consumption-sheets.service';
 import { CreateConsumptionSheetDto } from './dto/create-consumption-sheet.dto';
 import { UpdateConsumptionSheetDto } from './dto/update-consumption-sheet.dto';
 
+@ApiTags('consumption-sheets')
 @Controller('consumption-sheets')
 export class ConsumptionSheetsController {
   constructor(private readonly consumptionSheetsService: ConsumptionSheetsService) {}

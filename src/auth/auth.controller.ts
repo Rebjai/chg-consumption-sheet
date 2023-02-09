@@ -1,3 +1,4 @@
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './../users/dto/create-user.dto';
 import { Tokens } from './types/tokens.type';
 import { AuthDto } from './dtos/auth.dto';
@@ -7,6 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) {}
@@ -22,6 +24,7 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
