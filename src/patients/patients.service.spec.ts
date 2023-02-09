@@ -98,6 +98,7 @@ describe('PatientsService', () => {
       name: 'janet',
       first_surname: 'Doe',
       second_surname: 'Deo',
+      date_of_birth: new Date(1996, 8, 24),
       active: false,
     }
     const updated = await service.update(1, updatedpatient)

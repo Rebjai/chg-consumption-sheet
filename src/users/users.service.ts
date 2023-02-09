@@ -14,7 +14,11 @@ export class UsersService {
     await this.emailIsUnique(createUserDto.email)
     const errors = await validate(plainToInstance(CreateUserDto, createUserDto))
     if (errors.length > 0)
-      throw new UnprocessableEntityException({ errors });
+      throw new UnprocessableEntityException({ errors, status: 422 });
+    const passwordMatch = createUserDto.password == createUserDto.password_confirmation
+    if (!passwordMatch) {
+      throw new UnprocessableEntityException('passwords don\'t match');
+    }
     const user = new User()
     user.email = createUserDto.email
     user.password = createUserDto.password
@@ -27,7 +31,7 @@ export class UsersService {
     return !userExists
   }
 
-  async findAll() : Promise<User[]> {
+  async findAll(): Promise<User[]> {
     return this.usersRepository.find()
   }
 
@@ -46,7 +50,7 @@ export class UsersService {
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id)
-    const emailIsUn1que =await this.emailIsUnique(updateUserDto.email)
+    const emailIsUn1que = await this.emailIsUnique(updateUserDto.email)
     user.email = updateUserDto.email
 
     this.usersRepository.save(user)

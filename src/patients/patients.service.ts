@@ -51,8 +51,9 @@ export class PatientsService {
     if (!patient) {
       throw new NotFoundException()
     }
-    if (errors.length > 0)
+    if (errors.length > 0){
       throw new BadRequestException({ errors })
+    }
     patient.name = updatePatientDto.name;
     patient.firstSurname = updatePatientDto.first_surname;
     patient.secondSurname = updatePatientDto.second_surname;
