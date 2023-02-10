@@ -1,10 +1,12 @@
+import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ConsumptionSheetsService } from './consumption-sheets.service';
 import { CreateConsumptionSheetDto } from './dto/create-consumption-sheet.dto';
 import { UpdateConsumptionSheetDto } from './dto/update-consumption-sheet.dto';
 
 @ApiTags('consumption-sheets')
+@UseGuards(JwtAuthGuard)
 @Controller('consumption-sheets')
 export class ConsumptionSheetsController {
   constructor(private readonly consumptionSheetsService: ConsumptionSheetsService) {}

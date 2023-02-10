@@ -1,12 +1,14 @@
+import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { PaginationDto } from './../common/dto/pagination.dto';
 import { QueryRoomDto } from './dto/query-room.dto';
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('rooms')
+@UseGuards(JwtAuthGuard)
 @Controller('rooms')
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}

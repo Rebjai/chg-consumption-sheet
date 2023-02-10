@@ -1,10 +1,12 @@
+import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ConsumptionDetailsService } from './consumption-details.service';
 import { CreateConsumptionDetailDto } from './dto/create-consumption-detail.dto';
 import { UpdateConsumptionDetailDto } from './dto/update-consumption-detail.dto';
 
 @ApiTags('consumption-details')
+@UseGuards(JwtAuthGuard)
 @Controller('consumption-sheets/:consumptionSheet/consumption-details')
 export class ConsumptionDetailsController {
   constructor(private readonly consumptionDetailsService: ConsumptionDetailsService) { }
