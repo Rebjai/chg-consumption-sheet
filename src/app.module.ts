@@ -12,8 +12,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import {ormAsyncConfig} from '../ormconfig'
 import { ConfigModule } from "@nestjs/config";
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
-  imports: [ConfigModule.forRoot({isGlobal: true}),TypeOrmModule.forRootAsync(ormAsyncConfig),RoomsModule, ProductsModule, StaffModule, ConsumptionSheetsModule, PatientsModule, ConsumptionDetailsModule, UsersModule, AuthModule],
+  imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
+    }),
+    ConfigModule.forRoot({isGlobal: true}),TypeOrmModule.forRootAsync(ormAsyncConfig),RoomsModule, ProductsModule, StaffModule, ConsumptionSheetsModule, PatientsModule, ConsumptionDetailsModule, UsersModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
