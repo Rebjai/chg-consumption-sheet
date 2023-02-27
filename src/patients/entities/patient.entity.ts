@@ -3,16 +3,16 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Up
 @Entity()
 export class Patient extends CHGBaseEntity{
     @Column()
-    firstSurname: string;
+    first_surname: string;
 
     @Column()
-    secondSurname: string;
+    second_surname: string;
 
     @Column()
     name: string;
 
     @Column()
-    dateOfBirth: Date;
+    date_of_birth: Date;
 
     @Column({default: true})
     active: Boolean

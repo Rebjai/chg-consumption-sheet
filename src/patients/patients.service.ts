@@ -21,9 +21,9 @@ export class PatientsService {
 
     const patient = new Patient()
     patient.name = createPatientDto.name;
-    patient.firstSurname = createPatientDto.first_surname;
-    patient.secondSurname = createPatientDto.second_surname;
-    patient.dateOfBirth = createPatientDto.date_of_birth;
+    patient.first_surname = createPatientDto.first_surname;
+    patient.second_surname = createPatientDto.second_surname;
+    patient.date_of_birth = createPatientDto.date_of_birth;
 
     return await this.patientsRepository.save(patient);
   }
@@ -55,9 +55,9 @@ export class PatientsService {
       throw new BadRequestException({ errors })
     }
     patient.name = updatePatientDto.name;
-    patient.firstSurname = updatePatientDto.first_surname;
-    patient.secondSurname = updatePatientDto.second_surname;
-    patient.dateOfBirth = updatePatientDto.date_of_birth;
+    patient.first_surname = updatePatientDto.first_surname;
+    patient.second_surname = updatePatientDto.second_surname;
+    patient.date_of_birth = updatePatientDto.date_of_birth;
     patient.active = updatePatientDto.active;
     return await this.patientsRepository.save(patient);
   }
