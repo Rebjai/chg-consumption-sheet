@@ -19,11 +19,11 @@ export class StaffService {
 
     const staff = new Staff()
     staff.name = createStaffDto.name
-    staff.secondSurname = createStaffDto.second_surname
-    staff.firstSurname = createStaffDto.first_surname
-    staff.jobTitle = createStaffDto.job_title
-    staff.dateOfBirth = createStaffDto.date_of_birth
-    staff.telephoneNumber = createStaffDto.telephone_number
+    staff.second_surname = createStaffDto.second_surname
+    staff.first_surname = createStaffDto.first_surname
+    staff.job_title = createStaffDto.job_title
+    staff.date_of_birth = createStaffDto.date_of_birth
+    staff.telephone_number = createStaffDto.telephone_number
     // if (createStaffDto.user_id)
     // staff.user = 
     return await this.staffRepository.save(staff)
@@ -49,11 +49,11 @@ export class StaffService {
     if (errors.length > 1)
       throw new UnprocessableEntityException()
     staff.name = updateStaffDto.name
-    staff.secondSurname = updateStaffDto.second_surname
-    staff.firstSurname = updateStaffDto.first_surname
-    staff.jobTitle = updateStaffDto.job_title
-    staff.dateOfBirth = updateStaffDto.date_of_birth
-    staff.telephoneNumber = updateStaffDto.telephone_number
+    staff.second_surname = updateStaffDto.second_surname
+    staff.first_surname = updateStaffDto.first_surname
+    staff.job_title = updateStaffDto.job_title
+    staff.date_of_birth = updateStaffDto.date_of_birth
+    staff.telephone_number = updateStaffDto.telephone_number
     return await this.staffRepository.save(staff);
   }
 

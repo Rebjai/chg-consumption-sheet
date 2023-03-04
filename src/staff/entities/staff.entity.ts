@@ -8,19 +8,19 @@ export class Staff extends CHGBaseEntity {
   name: string;
 
   @Column()
-  firstSurname: string;
+  first_surname: string;
   
   @Column()
-  secondSurname: string;
+  second_surname: string;
 
   @Column()
-  telephoneNumber: string;
+  telephone_number: string;
 
   @Column()
-  jobTitle: string;
+  job_title: string;
 
   @Column()
-  dateOfBirth: Date
+  date_of_birth: Date
 
   @ManyToOne(type => User)
   user?: User;
