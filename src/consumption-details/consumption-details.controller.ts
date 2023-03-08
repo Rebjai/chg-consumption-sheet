@@ -1,13 +1,15 @@
+import { ApiResponseInterceptor } from './../common/interceptors/api-response.interceptor';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Put } from '@nestjs/common';
 import { ConsumptionDetailsService } from './consumption-details.service';
 import { CreateConsumptionDetailDto } from './dto/create-consumption-detail.dto';
 import { UpdateConsumptionDetailDto } from './dto/update-consumption-detail.dto';
 
 @ApiTags('consumption-details')
 @UseGuards(JwtAuthGuard)
-@Controller('consumption-sheets/:consumptionSheet/consumption-details')
+@UseInterceptors(ApiResponseInterceptor)
+@Controller(['consumption-sheets/:consumptionSheet/consumption-details', 'consumption-details'])
 export class ConsumptionDetailsController {
   constructor(private readonly consumptionDetailsService: ConsumptionDetailsService) { }
 
@@ -18,8 +20,11 @@ export class ConsumptionDetailsController {
   }
 
   @Get()
-  findAll(@Param('consumptionSheet') consumptionSheet: string) {
+  findAll(@Param('consumptionSheet') consumptionSheet?: string) {
+    console.log(consumptionSheet);
+    if(consumptionSheet)
     return this.consumptionDetailsService.findAll(+consumptionSheet);
+    return this.consumptionDetailsService.findAll();
   }
 
   @Get(':id')
@@ -27,7 +32,7 @@ export class ConsumptionDetailsController {
     return this.consumptionDetailsService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateConsumptionDetailDto: UpdateConsumptionDetailDto) {
     return this.consumptionDetailsService.update(+id, updateConsumptionDetailDto);
   }

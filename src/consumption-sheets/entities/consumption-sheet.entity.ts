@@ -31,6 +31,6 @@ export class ConsumptionSheet extends CHGBaseEntity{
     @Column()
     admission_date: Date;
 
-    @OneToMany(type => ConsumptionDetail, consumption => consumption.consumptionSheet)
+    @OneToMany(type => ConsumptionDetail, consumption => consumption.consumption_sheet)
     consumptions?: ConsumptionDetail[]
 }

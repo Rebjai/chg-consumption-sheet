@@ -8,20 +8,20 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Up
 export class ConsumptionDetail extends CHGBaseEntity{
   @ManyToOne(type => ConsumptionSheet, consumptionSheet => consumptionSheet.consumptions)
   @JoinColumn()
-  consumptionSheet: ConsumptionSheet;
+  consumption_sheet: ConsumptionSheet;
 
   @Column()
-  consumptionSheetId: number;
+  consumption_sheet_id: number;
 
   @Column()
-  productId: number;
+  product_id: number;
 
   @ManyToOne(type => Product)
   @JoinColumn()
   product: Product;
 
   @Column()
-  staffId: number;
+  staff_id: number;
 
   @ManyToOne(type => Staff)
   @JoinColumn()
