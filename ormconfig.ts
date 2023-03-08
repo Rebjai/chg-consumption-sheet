@@ -8,6 +8,7 @@ import { Room } from "src/rooms/entities/room.entity"
 import { Staff } from "src/staff/entities/staff.entity"
 import { User } from "src/users/entities/user.entity"
 import { DataSourceOptions } from "typeorm"
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 const ormConfig: DataSourceOptions | TypeOrmModuleOptions = {
     type: 'postgres',
@@ -32,6 +33,8 @@ const ormAsyncConfig: TypeOrmModuleAsyncOptions = {
         database: configService.get<string>('DB_NAME'),
         entities: [User, Room, Patient, Staff, Product, ConsumptionDetail, ConsumptionSheet],
         synchronize: true,
+        namingStrategy: new SnakeNamingStrategy(),
+        // dropSchema:true,
     })
 }
 export default ormConfig
