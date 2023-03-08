@@ -31,7 +31,7 @@ export class ConsumptionSheetsService {
     consumptionSheet.room = await this.roomsService.updateRoomStatus(createConsumptionSheetDto.room_id, RoomStatus.OCCUPIED)
     consumptionSheet.diagnosis = createConsumptionSheetDto.diagnosis;
     consumptionSheet.doctor = createConsumptionSheetDto.doctor;
-    consumptionSheet.admissionDate = createConsumptionSheetDto.admission_date;
+    consumptionSheet.admission_date = createConsumptionSheetDto.admission_date;
     return await this.consumptionSheetRepository.save(consumptionSheet);
   }
 
@@ -57,13 +57,13 @@ export class ConsumptionSheetsService {
     if (errors.length>0) {
       throw new UnprocessableEntityException()
     }
-    if (updateConsumptionSheetDto.room_id !== consumptionSheet.roomId) {
+    if (updateConsumptionSheetDto.room_id !== consumptionSheet.room_id) {
       this.roomsService.updateRoomStatus(consumptionSheet.room.id, RoomStatus.AVAILABLE)
       consumptionSheet.room = await this.roomsService.updateRoomStatus(updateConsumptionSheetDto.room_id, RoomStatus.OCCUPIED)
     }
     consumptionSheet.diagnosis = updateConsumptionSheetDto.diagnosis;
     consumptionSheet.doctor = updateConsumptionSheetDto.doctor;
-    consumptionSheet.admissionDate = updateConsumptionSheetDto.admission_date;
+    consumptionSheet.admission_date = updateConsumptionSheetDto.admission_date;
     return await this.consumptionSheetRepository.save(consumptionSheet)
   }
 

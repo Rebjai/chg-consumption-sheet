@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsDate, IsDateString, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateConsumptionSheetDto {
@@ -13,6 +14,7 @@ export class CreateConsumptionSheetDto {
     @ApiProperty()
     @IsDate()
     @IsNotEmpty()
+    @Type(type => Date)
     admission_date: Date;
 
     @ApiProperty()
