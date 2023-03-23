@@ -21,7 +21,6 @@ export class ConsumptionDetailsController {
 
   @Get()
   findAll(@Param('consumptionSheet') consumptionSheet?: string) {
-    console.log(consumptionSheet);
     if(consumptionSheet)
     return this.consumptionDetailsService.findAll(+consumptionSheet);
     return this.consumptionDetailsService.findAll();
