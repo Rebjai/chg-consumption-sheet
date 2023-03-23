@@ -1,6 +1,7 @@
+import { ApiResponseInterceptor } from './../common/interceptors/api-response.interceptor';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -8,6 +9,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @ApiTags('users')
 @UseGuards(JwtAuthGuard)
 @Controller('users')
+@UseInterceptors(ApiResponseInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
