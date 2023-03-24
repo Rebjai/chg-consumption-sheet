@@ -1,3 +1,4 @@
+import { CreatedByAdminDto } from './dtos/created-by-admin.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './../users/dto/create-user.dto';
 import { Tokens } from './types/tokens.type';
@@ -29,6 +30,14 @@ export class AuthController {
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
+  }
+  
+  @Post('register-by-admin')
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtAuthGuard)
+  registerUserByAdmin(@Body() dto: CreatedByAdminDto, @Request() req): Promise<Tokens> {
+    // req.user.role ==
+    return this.authService.registerByAdmin(dto);
   }
   
 }

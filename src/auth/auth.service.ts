@@ -1,3 +1,4 @@
+import { CreatedByAdminDto } from './dtos/created-by-admin.dto';
 import { CreateUserDto } from './../users/dto/create-user.dto';
 import { AuthDto } from './dtos/auth.dto';
 import { JwtPayload } from './types/jwt-payload.type';
@@ -58,6 +59,16 @@ export class AuthService {
       });
     const user: User = await this.usersService.create(newUser)
     const tokens = this.validateJwt({ email: user.email, password: registerDto.password })
+    return tokens
+  }
+
+  async registerByAdmin(registerDto: CreatedByAdminDto): Promise<Tokens> {
+    const newUser = { ...registerDto }
+    const password = await this.hashService.hash('pass1234')
+    const user: User = await this.usersService.create({...newUser, password, password_confirmation: password})
+    console.log({user});
+    
+    const tokens = this.validateJwt({ email: user.email, password: 'pass1234' })
     return tokens
   }
   async getTokens(user: User): Promise<Tokens> {

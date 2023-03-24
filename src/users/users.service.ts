@@ -22,6 +22,7 @@ export class UsersService {
     const user = new User()
     user.email = createUserDto.email
     user.password = createUserDto.password
+    user.role = createUserDto.role??1
     return this.usersRepository.save(user);
   }
   async emailIsUnique(email: string): Promise<Boolean> {
