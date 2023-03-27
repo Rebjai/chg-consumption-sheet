@@ -1,10 +1,12 @@
+import { UpdateUserByAdminDto } from './dto/update-user-by-admin.dto';
 import { ApiResponseInterceptor } from './../common/interceptors/api-response.interceptor';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, UseInterceptors, Put, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import UserRole from './enums/user-role.enum';
 
 @ApiTags('users')
 @UseGuards(JwtAuthGuard)
@@ -28,8 +30,13 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto | UpdateUserByAdminDto, @Request() req) {
+    console.log({user: req.user});
+    if (req.user.role == UserRole.ADMIN) {
+      return this.usersService.updateByAdmin(+id, updateUserDto);
+    }
+    
     return this.usersService.update(+id, updateUserDto);
   }
 

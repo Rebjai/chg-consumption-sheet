@@ -6,9 +6,11 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { UpdateUserByAdminDto } from './dto/update-user-by-admin.dto';
 
 @Injectable()
 export class UsersService {
+  
   constructor(@InjectRepository(User) private usersRepository: Repository<User>) { }
   async create(createUserDto: CreateUserDto): Promise<User> {
     await this.emailIsUnique(createUserDto.email)
@@ -22,7 +24,7 @@ export class UsersService {
     const user = new User()
     user.email = createUserDto.email
     user.password = createUserDto.password
-    user.role = createUserDto.role??1
+    user.role = createUserDto.role ?? 1
     return this.usersRepository.save(user);
   }
   async emailIsUnique(email: string): Promise<Boolean> {
@@ -51,8 +53,22 @@ export class UsersService {
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id)
-    const emailIsUn1que = await this.emailIsUnique(updateUserDto.email)
-    user.email = updateUserDto.email
+    if (user.email !== updateUserDto.email) {
+      const emailIsUnique = await this.emailIsUnique(updateUserDto.email)
+      user.email = updateUserDto.email
+    }
+    this.usersRepository.save(user)
+    return user;
+  }
+
+  async updateByAdmin(id: number, updateUserDto: UpdateUserByAdminDto) {
+    const user = await this.findOne(id)
+    if (user.email !== updateUserDto.email) {
+      const emailIsUnique = await this.emailIsUnique(updateUserDto.email)
+      user.email = updateUserDto.email
+    }
+    user.role = updateUserDto.role
+    
 
     this.usersRepository.save(user)
     return user;
