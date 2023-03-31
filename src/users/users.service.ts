@@ -21,10 +21,13 @@ export class UsersService {
     if (!passwordMatch) {
       throw new UnprocessableEntityException('passwords don\'t match');
     }
+    const users = await this.usersRepository.count() > 0
+    console.log({users})
     const user = new User()
     user.email = createUserDto.email
     user.password = createUserDto.password
-    user.role = createUserDto.role ?? 1
+    user.role = !users? 10: createUserDto.role ?? 1
+    
     return this.usersRepository.save(user);
   }
   async emailIsUnique(email: string): Promise<Boolean> {

@@ -16,6 +16,9 @@ export abstract class Profile extends CHGBaseEntity {
     @Column()
     date_of_birth: Date
 
+    @Column({nullable:true})
+    user_id?: number;
+
     @ManyToOne(type => User)
     user?: User;
 

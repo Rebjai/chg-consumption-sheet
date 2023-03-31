@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class StaffService {
+  
   constructor(@InjectRepository(Staff) private staffRepository: Repository<Staff>) { }
 
 
@@ -24,8 +25,11 @@ export class StaffService {
     staff.job_title = createStaffDto.job_title
     staff.date_of_birth = createStaffDto.date_of_birth
     staff.telephone_number = createStaffDto.telephone_number
-    // if (createStaffDto.user_id)
-    // staff.user = 
+    if (createStaffDto.user_id) {
+
+      staff.user_id = createStaffDto.user_id
+      console.log({userid: staff.user_id});
+    }
     return await this.staffRepository.save(staff)
   }
 
@@ -41,8 +45,31 @@ export class StaffService {
     return staff;
   }
 
+  async getProfile(userId: number) {
+    const staff = await this.staffRepository.findOneBy({user_id: userId})
+    return staff
+  }
+
   async update(id: number, updateStaffDto: UpdateStaffDto) {
-    const staff = await this.staffRepository.findOneBy({ id })
+    console.log({ id, updateStaffDto });
+
+    const staff = await this.staffRepository.findOneBy({ id: id?id:0 })
+    console.log({staff});
+    
+    if (!staff && updateStaffDto.user_id) {
+      console.log('newprofile');
+      let newProfile = new CreateStaffDto()
+      newProfile.name = updateStaffDto.name
+      newProfile.second_surname = updateStaffDto.second_surname
+      newProfile.first_surname = updateStaffDto.first_surname
+      newProfile.job_title = updateStaffDto.job_title
+      newProfile.date_of_birth = updateStaffDto.date_of_birth
+      newProfile.telephone_number = updateStaffDto.telephone_number
+      newProfile.user_id = updateStaffDto.user_id
+      console.log({newProfile});
+      
+      return this.create(newProfile)
+    }
     if (!staff)
       throw new NotFoundException("Staff member not found");
     const errors = await validate(plainToInstance(UpdateStaffDto, updateStaffDto))
