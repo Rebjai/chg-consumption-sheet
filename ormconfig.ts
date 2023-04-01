@@ -32,7 +32,7 @@ const ormAsyncConfig: TypeOrmModuleAsyncOptions = {
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [User, Room, Patient, Staff, Product, ConsumptionDetail, ConsumptionSheet],
-        synchronize: true,
+        // synchronize: true,
         namingStrategy: new SnakeNamingStrategy(),
         // dropSchema:true,
     })

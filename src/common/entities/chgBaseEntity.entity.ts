@@ -1,7 +1,6 @@
-import { CreateDateColumn, DeleteDateColumn, Entity, EntitySchema, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity()
-export class CHGBaseEntity {
+export abstract class CHGBaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
