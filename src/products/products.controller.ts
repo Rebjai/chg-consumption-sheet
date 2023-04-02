@@ -22,6 +22,7 @@ export class ProductsController {
 
   @Get()
   findAll(@Query() productQuery: ProductQueryDto, @Query() pagination: PaginationDto) {
+    pagination.route = '/products'
     return this.productsService.findAll(productQuery, pagination);
   }
 

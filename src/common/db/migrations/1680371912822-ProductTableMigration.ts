@@ -10,7 +10,7 @@ export class ProductTableMigration1680371912822 implements MigrationInterface {
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "deleted_at" TIMESTAMP,
                 "name" character varying NOT NULL,
-                "price" integer NOT NULL,
+                "price" DECIMAL NOT NULL,
                 CONSTRAINT "PK_bebc9158e480b949565b4dc7a82" PRIMARY KEY ("id")
             )`);
     }

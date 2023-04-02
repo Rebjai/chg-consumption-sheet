@@ -8,6 +8,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { ProductQueryDto } from './dto/product-query.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ProductsService {
@@ -23,20 +24,19 @@ export class ProductsService {
     return await this.productsRepository.save(product);
   }
 
-  async findAll(productQuery?: ProductQueryDto, pagination: PaginationDto = new PaginationDto()) {
+  async findAll(productQuery?: ProductQueryDto, pagination: PaginationDto = new PaginationDto()): Promise<Pagination<Product>> {
     if (productQuery) {
-      const options: FindManyOptions<Product> = { ...pagination }
+      const options: FindManyOptions<Product> = {}
       options.where = { name: ILike(`%${productQuery.name}%`) }
       if (productQuery.price_filter == 'lt') {
         options.where = { ...options.where, price: LessThanOrEqual(productQuery.price) }
       } else {
         options.where = { ...options.where, price: MoreThanOrEqual(productQuery.price) }
       }
-      return await this.productsRepository.find(options)
+      const response: Pagination<Product> = await paginate<Product>(this.productsRepository, pagination, options)
+      return response
     }
-
-    const products: Product[] = await this.productsRepository.find()
-    return products;
+    return paginate<Product>(this.productsRepository, pagination)
   }
 
   async findOne(id: number) {

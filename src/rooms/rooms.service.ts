@@ -1,3 +1,4 @@
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { PaginationDto } from './../common/dto/pagination.dto';
 import { QueryRoomDto } from './dto/query-room.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -33,9 +34,11 @@ export class RoomsService {
     return await this.roomsRepository.save(room);
   }
 
-  async findAll(query: QueryRoomDto, pagination: PaginationDto = new PaginationDto()) {
-    const rooms: Room[] = await this.roomsRepository.find({ where: query, skip: pagination.skip, take: pagination.take })
-    return rooms;
+  async findAll(query: QueryRoomDto, pagination: PaginationDto = new PaginationDto()) : Promise<Pagination<Room>>{
+    // const rooms: Room[] = await this.roomsRepository.find()
+    console.log({query, pagination});
+    
+    return paginate<Room>(this.roomsRepository, pagination, query);
   }
 
   async findOne(id: number) {

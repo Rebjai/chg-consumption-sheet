@@ -6,7 +6,7 @@ export class Product extends CHGBaseEntity{
     @Column()
     name: string;
 
-    @Column()
+    @Column({type:'decimal'})
     price: number;
 
 }
