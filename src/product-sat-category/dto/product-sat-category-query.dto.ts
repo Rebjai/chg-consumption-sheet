@@ -9,4 +9,8 @@ export class ProductSatCategoryQueryDto {
     @IsOptional()
     @IsString()
     name: string
+
+    @IsOptional()
+    @IsString()
+    q: string
 }

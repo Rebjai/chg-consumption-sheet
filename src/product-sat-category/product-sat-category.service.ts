@@ -25,12 +25,15 @@ export class ProductSatCategoryService {
   }
 
   async findAll(productQuery?: ProductSatCategoryQueryDto, pagination: PaginationDto = new PaginationDto()): Promise<Pagination<ProductSatCategory>> {
-    if (productQuery) {
+    if (productQuery?.q) {
       const options: FindManyOptions<ProductSatCategory> = {}
       options.where = [
-        { name: ILike(`%${productQuery.name}%`) },
-        { code: ILike(productQuery.code) }
+        { name: ILike(`%${productQuery.q}%`) },
+        
       ]
+      if (parseInt(productQuery.q)) {
+        options.where.push({ code: +productQuery.q })
+      }
       const response: Pagination<ProductSatCategory> = await paginate<ProductSatCategory>(this.productsRepository, pagination, options)
       return response
     }

@@ -1,9 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { PaginationDto } from './../common/dto/pagination.dto';
+import { ApiResponseInterceptor } from './../common/interceptors/api-response.interceptor';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Query } from '@nestjs/common';
 import { ProductSatCategoryService } from './product-sat-category.service';
 import { CreateProductSatCategoryDto } from './dto/create-product-sat-category.dto';
 import { UpdateProductSatCategoryDto } from './dto/update-product-sat-category.dto';
+import { ProductSatCategoryQueryDto } from './dto/product-sat-category-query.dto';
 
 @Controller('product-sat-category')
+@UseInterceptors(ApiResponseInterceptor)
 export class ProductSatCategoryController {
   constructor(private readonly productSatCategoryService: ProductSatCategoryService) {}
 
@@ -13,8 +17,8 @@ export class ProductSatCategoryController {
   }
 
   @Get()
-  findAll() {
-    return this.productSatCategoryService.findAll();
+  findAll(@Query() productSatCategoryQueryDto: ProductSatCategoryQueryDto,@Query() pagination: PaginationDto) {
+    return this.productSatCategoryService.findAll(productSatCategoryQueryDto, pagination);
   }
 
   @Get(':id')
