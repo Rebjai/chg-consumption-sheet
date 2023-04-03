@@ -5,7 +5,7 @@ import { Column, Entity, Index, OneToMany } from "typeorm";
 @Entity()
 export class ProductSatCategory extends CHGBaseEntity {
 
-    @Column()
+    @Column({type: 'bigint'})
     @Index()
     code: number
 

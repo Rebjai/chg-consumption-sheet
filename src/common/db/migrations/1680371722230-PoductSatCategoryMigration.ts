@@ -9,7 +9,8 @@ export class PoductSatCategoryMigration1680371722230 implements MigrationInterfa
                 "id" SERIAL NOT NULL,
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP, "code" integer NOT NULL,
+                "deleted_at" TIMESTAMP,
+                "code" bigint NOT NULL,
                 "name" character varying NOT NULL,
                 CONSTRAINT "PK_fa539f9bee8de82df4a98a425a9" PRIMARY KEY ("id")
             )`
