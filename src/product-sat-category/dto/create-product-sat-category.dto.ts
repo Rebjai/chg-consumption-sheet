@@ -4,7 +4,7 @@ export class CreateProductSatCategoryDto {
 
     @IsNotEmpty()
     @IsNumber()
-    code: number
+    code: string
     
     @IsNotEmpty()
     @IsString()

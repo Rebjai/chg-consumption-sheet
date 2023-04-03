@@ -7,7 +7,7 @@ export class ProductSatCategory extends CHGBaseEntity {
 
     @Column({type: 'bigint'})
     @Index()
-    code: number
+    code: string
 
     @Column()
     name: string

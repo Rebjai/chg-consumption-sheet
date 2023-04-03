@@ -29,10 +29,10 @@ export class ProductSatCategoryService {
       const options: FindManyOptions<ProductSatCategory> = {}
       options.where = [
         { name: ILike(`%${productQuery.q}%`) },
-        
+
       ]
       if (parseInt(productQuery.q)) {
-        options.where.push({ code: +productQuery.q })
+        options.where.push({ code: MoreThanOrEqual(productQuery.q) })
       }
       const response: Pagination<ProductSatCategory> = await paginate<ProductSatCategory>(this.productsRepository, pagination, options)
       return response
