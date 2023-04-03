@@ -1,3 +1,4 @@
+import { ProductSatCategory } from 'src/product-sat-category/entities/product-sat-category.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConsumptionDetail } from "src/consumption-details/entities/consumption-detail.entity"
@@ -31,7 +32,7 @@ const ormAsyncConfig: TypeOrmModuleAsyncOptions = {
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User, Room, Patient, Staff, Product, ConsumptionDetail, ConsumptionSheet],
+        entities: [User, Room, Patient, Staff, Product, ProductSatCategory, ConsumptionDetail, ConsumptionSheet],
         // synchronize: true,
         namingStrategy: new SnakeNamingStrategy(),
         // dropSchema:true,
