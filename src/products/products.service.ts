@@ -21,6 +21,7 @@ export class ProductsService {
     const product = new Product()
     product.price = createProductDto.price
     product.name = createProductDto.name
+    product.category_id = createProductDto.category_id
     return await this.productsRepository.save(product);
   }
 
@@ -36,7 +37,7 @@ export class ProductsService {
       const response: Pagination<Product> = await paginate<Product>(this.productsRepository, pagination, options)
       return response
     }
-    return paginate<Product>(this.productsRepository, pagination)
+    return paginate<Product>(this.productsRepository, pagination, {order:{name:'DESC',id:'DESC'}})
   }
 
   async findOne(id: number) {
@@ -58,6 +59,7 @@ export class ProductsService {
     }
     product.name = updateProductDto.name
     product.price = updateProductDto.price
+    product.category_id = updateProductDto.category_id
     return this.productsRepository.save(product);
   }
 

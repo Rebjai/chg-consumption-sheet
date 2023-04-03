@@ -12,4 +12,9 @@ export class CreateProductDto {
     @IsNumber()
     @Min(0)
     price: number
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsNumber()
+    category_id : number
 }
