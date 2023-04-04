@@ -13,6 +13,6 @@ export class Product extends CHGBaseEntity{
     @Column({nullable: true})
     category_id?: number;
     
-    @ManyToOne((type)=>ProductSatCategory)
+    @ManyToOne((type)=>ProductSatCategory, {eager: true})
     category?: ProductSatCategory
 }
