@@ -2,7 +2,7 @@ import { ApiResponseInterceptor } from './../common/interceptors/api-response.in
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { PaginationDto } from './../common/dto/pagination.dto';
 import { ProductQueryDto } from './dto/product-query.dto';
-import { Controller, Get, Post, Body, Param, Delete, Query, UseGuards, UseInterceptors, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Query, UseGuards, UseInterceptors, Put, StreamableFile, Header } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -24,6 +24,13 @@ export class ProductsController {
   findAll(@Query() productQuery: ProductQueryDto, @Query() pagination: PaginationDto) {
     pagination.route = '/products'
     return this.productsService.findAll(productQuery, pagination);
+  }
+
+  @Get('download')
+  @Header('Content-Type', 'text/csv')
+  async downloadFile(@Query() query: ProductQueryDto, @Query('format') format: 'csv' | 'xlsx' = 'csv'): Promise<StreamableFile> {
+    console.log({query}, {format});
+    return this.productsService.downloadFile(query, format);
   }
 
   @Get(':id')

@@ -1,5 +1,5 @@
 import { PaginationDto } from './../common/dto/pagination.dto';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
@@ -9,6 +9,8 @@ import { ProductQueryDto } from './dto/product-query.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
+import * as xlsx from 'xlsx'
+
 
 /**
  * ProductsService is responsible for handling all the CRUD operations for products.
@@ -101,5 +103,56 @@ export class ProductsService {
 
   async remove(id: number) {
     return this.productsRepository.softDelete({ id });
+  }
+
+
+  private getFindOptions(productQuery: ProductQueryDto): FindManyOptions<Product> {
+    const options: FindManyOptions<Product> = { where: {}, order: { name: 'DESC', id: 'DESC' } };
+    if (productQuery.name) {
+      options.where = { name: ILike(`%${productQuery.name}%`) };
+    }
+    if (productQuery.price) {
+      if (productQuery.price_filter == 'lt') {
+        options.where = { ...options.where, price: LessThanOrEqual(productQuery.price) }
+      } else {
+        options.where = { ...options.where, price: MoreThanOrEqual(productQuery.price) }
+      }
+    }
+
+    return options;
+  }
+
+  async downloadFile(productQuery?: ProductQueryDto, format: 'csv' | 'xlsx' = 'csv'): Promise<StreamableFile> {
+    const options = this.getFindOptions(productQuery)
+    const data = await this.productsRepository.find(options);
+    if (format === 'csv') {
+      return this.exportAsCsv(data);
+    } else {
+      return this.exportAsExcel(data);
+    }
+  }
+
+  private async exportAsCsv(data: Product[]): Promise<StreamableFile> {
+    const exportData = data.map(({ id, name, price, category }) => ({ id, name, price, category: category?.code ?? 'n/a' }))
+    const worksheet = xlsx.utils.json_to_sheet(exportData)
+    const workbook = xlsx.utils.book_new();
+    const stream = xlsx.stream.to_csv(worksheet);
+    const filename = 'my-csv-file.csv';
+    const streamableFile = new StreamableFile(stream);
+    return streamableFile
+  }
+
+  private async exportAsExcel(data: Product[]): Promise<StreamableFile> {
+    const worksheet = xlsx.utils.json_to_sheet(data);
+    const workbook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'Products');
+    const stream = xlsx.writeXLSX(workbook, { bookType: 'xlsx', bookSST: false });
+
+    // create the StreamableFile object with appropriate headers
+    const filename = 'my-excel-file.xlsx';
+    const streamableFile = new StreamableFile(stream);
+
+    // return the StreamableFile object
+    return streamableFile;
   }
 }
