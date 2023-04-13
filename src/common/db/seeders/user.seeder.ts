@@ -1,5 +1,5 @@
 import { User } from './../../../users/entities/user.entity';
-import { Connection, DataSource } from "typeorm";
+import { DataSource } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
 import { hash, hashSync } from 'bcrypt';
 import UserRole from 'src/users/enums/user-role.enum';
