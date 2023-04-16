@@ -3,6 +3,7 @@ import { CHGBaseEntity } from './../../common/entities/chgBaseEntity.entity';
 import { ConsumptionSheet } from './../../consumption-sheets/entities/consumption-sheet.entity';
 import { Staff } from './../../staff/entities/staff.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class ConsumptionDetail extends CHGBaseEntity{
@@ -20,12 +21,19 @@ export class ConsumptionDetail extends CHGBaseEntity{
   @JoinColumn()
   product: Product;
 
-  @Column()
+  @Column({nullable: true})
   staff_id: number;
 
   @ManyToOne(type => Staff)
   @JoinColumn()
   staff: Staff;
+
+  @Column({nullable: false})
+  user_id: number;
+
+  @ManyToOne(type => User)
+  @JoinColumn()
+  user: User;
 
   @Column()
   quantity: number;

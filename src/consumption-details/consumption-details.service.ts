@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateConsumptionDetailDto } from './dto/create-consumption-detail.dto';
 import { UpdateConsumptionDetailDto } from './dto/update-consumption-detail.dto';
 import { Repository } from 'typeorm';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ConsumptionDetailsService {
@@ -15,17 +16,20 @@ export class ConsumptionDetailsService {
     @Inject(ConsumptionSheetsService) private consumptionSheetsService: ConsumptionSheetsService,
     @Inject(ProductsService) private productsService: ProductsService,
     @Inject(StaffService) private staffService: StaffService,
+    @Inject(UsersService) private usersService: UsersService,
   ) {
   }
 
   async create(consumptionId: number, createConsumptionDetailDto: CreateConsumptionDetailDto) {
     const consumptionSheet = await this.consumptionSheetsService.findOne(consumptionId?consumptionId:createConsumptionDetailDto.consumption_sheet_id)
     const product = await this.productsService.findOne(createConsumptionDetailDto.product_id)
-    const staff = await this.staffService.findOne(createConsumptionDetailDto.staff_id)
+    const staff = createConsumptionDetailDto.staff_id == 0 ? null:await this.staffService.findOne(createConsumptionDetailDto.staff_id)
+    const user = await this.usersService.findOne(createConsumptionDetailDto.user_id)
     const consumptionDetail = new ConsumptionDetail()
     consumptionDetail.consumption_sheet = consumptionSheet
     consumptionDetail.product = product
     consumptionDetail.staff = staff
+    consumptionDetail.user = user
     consumptionDetail.quantity = createConsumptionDetailDto.quantity
     consumptionDetail.total = product.price * createConsumptionDetailDto.quantity
     return await this.consumptionDetailRepository.save(consumptionDetail)

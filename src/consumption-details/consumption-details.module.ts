@@ -1,3 +1,4 @@
+import { UsersModule } from './../users/users.module';
 import { StaffModule } from './../staff/staff.module';
 import { ProductsModule } from './../products/products.module';
 import { ConsumptionSheetsModule } from './../consumption-sheets/consumption-sheets.module';
@@ -8,8 +9,8 @@ import { ConsumptionDetail } from './entities/consumption-detail.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ConsumptionDetail]), ConsumptionSheetsModule, ProductsModule, StaffModule],
+  imports: [TypeOrmModule.forFeature([ConsumptionDetail]), ConsumptionSheetsModule, ProductsModule, StaffModule, UsersModule],
   controllers: [ConsumptionDetailsController],
-  providers: [ConsumptionDetailsService]
+  providers: [ConsumptionDetailsService],
 })
 export class ConsumptionDetailsModule {}

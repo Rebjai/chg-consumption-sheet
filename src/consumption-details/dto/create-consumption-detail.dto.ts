@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 export class CreateConsumptionDetailDto {
 
     @IsNotEmpty()
@@ -9,14 +9,19 @@ export class CreateConsumptionDetailDto {
     @IsNumber()
     product_id: number;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     staff_id: number;
-
+    
     @IsNotEmpty()
     @IsNumber()
     quantity: number;
     
+
+    @IsNotEmpty()
+    @IsNumber()
+    user_id: number;
+
     // @IsNotEmpty()
     // @IsNumber()
     // total: number;
