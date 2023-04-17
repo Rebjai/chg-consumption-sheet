@@ -1,7 +1,8 @@
+import UserRole from 'src/users/enums/user-role.enum';
 import { ApiResponseInterceptor } from './../common/interceptors/api-response.interceptor';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Put, Request, ForbiddenException, Query } from '@nestjs/common';
 import { ConsumptionSheetsService } from './consumption-sheets.service';
 import { CreateConsumptionSheetDto } from './dto/create-consumption-sheet.dto';
 import { UpdateConsumptionSheetDto } from './dto/update-consumption-sheet.dto';
@@ -11,7 +12,7 @@ import { UpdateConsumptionSheetDto } from './dto/update-consumption-sheet.dto';
 @Controller('consumption-sheets')
 @UseInterceptors(ApiResponseInterceptor)
 export class ConsumptionSheetsController {
-  constructor(private readonly consumptionSheetsService: ConsumptionSheetsService) {}
+  constructor(private readonly consumptionSheetsService: ConsumptionSheetsService) { }
 
   @Post()
   create(@Body() createConsumptionSheetDto: CreateConsumptionSheetDto) {
@@ -19,7 +20,10 @@ export class ConsumptionSheetsController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query() query? : {closed?:boolean}) {
+    if (query.closed!!) {
+      return this.consumptionSheetsService.findClosed();
+    }
     return this.consumptionSheetsService.findAll();
   }
 
@@ -34,7 +38,11 @@ export class ConsumptionSheetsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string, @Request() req) {
+    if (req.user.role !== UserRole.ADMIN) {
+      throw new ForbiddenException();
+      
+    }
     return this.consumptionSheetsService.remove(+id);
   }
 }

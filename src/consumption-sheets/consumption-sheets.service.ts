@@ -2,10 +2,10 @@ import { plainToInstance } from 'class-transformer';
 import { RoomStatus } from './../rooms/enums/room-status.enum';
 import { PatientsService } from './../patients/patients.service';
 import { RoomsService } from './../rooms/rooms.service';
-import { HttpException, Inject, Injectable, HttpStatus, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { CreateConsumptionSheetDto } from './dto/create-consumption-sheet.dto';
 import { UpdateConsumptionSheetDto } from './dto/update-consumption-sheet.dto';
 import { ConsumptionSheet } from './entities/consumption-sheet.entity';
@@ -38,10 +38,21 @@ export class ConsumptionSheetsService {
   async findAll() {
     return this.consumptionSheetRepository.find();
   }
+  async findClosed() {
+    return this.consumptionSheetRepository.find(
+      {
+        withDeleted: true,
+        where: { deleted_at: Not(IsNull()) },
+        order: {
+          deleted_at: 'DESC'
+        }
+      }
+    );
+  }
 
   async findOne(id: number) {
     try {
-      const consumptionSheet = await this.consumptionSheetRepository.findOneByOrFail({ id });
+      const consumptionSheet = await this.consumptionSheetRepository.findOneOrFail({ where: { id }, withDeleted: true });
       return consumptionSheet
     } catch (error) {
       throw new NotFoundException("Consumption sheet not found");
@@ -54,7 +65,7 @@ export class ConsumptionSheetsService {
       throw new NotFoundException();
     }
     const errors = await validate(plainToInstance(UpdateConsumptionSheetDto, updateConsumptionSheetDto))
-    if (errors.length>0) {
+    if (errors.length > 0) {
       throw new UnprocessableEntityException()
     }
     if (updateConsumptionSheetDto.room_id !== consumptionSheet.room_id) {
@@ -68,9 +79,22 @@ export class ConsumptionSheetsService {
   }
 
   async remove(id: number) {
-    const consumptionSheet = await this.consumptionSheetRepository.findOneByOrFail({ id })
-    await this.roomsService.updateRoomStatus(consumptionSheet.room.id, RoomStatus.AVAILABLE)
-    await this.patientsService.remove(consumptionSheet.patient.id)
+    const consumptionSheet = await this.terminateSheet(id)
+    await this.roomsService.updateRoomStatus(consumptionSheet.room_id, RoomStatus.AVAILABLE)
     return this.consumptionSheetRepository.softDelete({ id: consumptionSheet.id });
+  }
+
+  private async terminateSheet(id: number) {
+    const consumptionSheet = await this.consumptionSheetRepository.findOne({ where: { id }, relations: ['consumptions'] })
+    if (!consumptionSheet) {
+      throw new NotFoundException();
+    }
+    // get total of each category, brute total and net total.
+    const subtotal = consumptionSheet.consumptions.reduce((prev, curr) => prev + curr.total, 0)
+    // const netTotal = subtotal * 1.16
+    consumptionSheet.total = subtotal
+    this.consumptionSheetRepository.save(consumptionSheet)
+
+    return consumptionSheet
   }
 }
