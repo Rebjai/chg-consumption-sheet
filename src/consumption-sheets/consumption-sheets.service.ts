@@ -52,7 +52,7 @@ export class ConsumptionSheetsService {
 
   async findOne(id: number) {
     try {
-      const consumptionSheet = await this.consumptionSheetRepository.findOneOrFail({ where: { id }, withDeleted: true });
+      const consumptionSheet = await this.consumptionSheetRepository.findOneOrFail({ where: { id }, withDeleted: true, relations: ['consumptions']});
       return consumptionSheet
     } catch (error) {
       throw new NotFoundException("Consumption sheet not found");
