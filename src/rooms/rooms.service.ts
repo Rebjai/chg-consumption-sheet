@@ -74,7 +74,7 @@ export class RoomsService {
     if (!room) {
       throw new NotFoundException('Room not found');
     }
-    if (room.status == status) {
+    if (status !== RoomStatus.AVAILABLE && room.status == status) {
       throw new BadRequestException("The room has that status already");
       
     }

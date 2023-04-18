@@ -78,10 +78,16 @@ export class ConsumptionSheetsService {
     return await this.consumptionSheetRepository.save(consumptionSheet)
   }
 
-  async remove(id: number) {
+  async close(id: number) {
     const consumptionSheet = await this.terminateSheet(id)
     await this.roomsService.updateRoomStatus(consumptionSheet.room_id, RoomStatus.AVAILABLE)
     return this.consumptionSheetRepository.softDelete({ id: consumptionSheet.id });
+  }
+
+  async remove(id: number) {
+    const consumptionSheet = await this.findOne(id)
+    await this.roomsService.updateRoomStatus(consumptionSheet.room_id, RoomStatus.AVAILABLE)
+    return this.consumptionSheetRepository.delete({ id });
   }
 
   private async terminateSheet(id: number) {

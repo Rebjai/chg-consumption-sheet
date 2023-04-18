@@ -36,7 +36,15 @@ export class ConsumptionSheetsController {
   update(@Param('id') id: string, @Body() updateConsumptionSheetDto: UpdateConsumptionSheetDto) {
     return this.consumptionSheetsService.update(+id, updateConsumptionSheetDto);
   }
-
+  @Delete(':id/close')
+  close(@Param('id') id: string, @Request() req) {
+    if (req.user.role !== UserRole.ADMIN) {
+      throw new ForbiddenException();
+      
+    }
+    return this.consumptionSheetsService.close(+id);
+  }
+  
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req) {
     if (req.user.role !== UserRole.ADMIN) {
