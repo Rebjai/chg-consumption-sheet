@@ -1,3 +1,4 @@
+import { PatientQueryDto } from './dto/patient-query.dto';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -28,7 +29,15 @@ export class PatientsService {
     return await this.patientsRepository.save(patient);
   }
 
-  async findAll(): Promise<Patient[]> {
+  async findAll(query?: PatientQueryDto): Promise<Patient[]> {
+    if (!query?.with_cosumption) {
+      return await this.patientsRepository.createQueryBuilder('patient')
+        .leftJoinAndSelect('patient.consumption_sheet', 'consumption_sheet')
+        .where('consumption_sheet.id IS NULL')
+        .getMany();
+
+    }
+
     return await this.patientsRepository.find(
       {
         where: {
@@ -51,7 +60,7 @@ export class PatientsService {
     if (!patient) {
       throw new NotFoundException()
     }
-    if (errors.length > 0){
+    if (errors.length > 0) {
       throw new BadRequestException({ errors })
     }
     patient.name = updatePatientDto.name;
