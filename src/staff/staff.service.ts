@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class StaffService {
-  
+
   constructor(@InjectRepository(Staff) private staffRepository: Repository<Staff>) { }
 
 
@@ -22,13 +22,13 @@ export class StaffService {
     staff.name = createStaffDto.name
     staff.second_surname = createStaffDto.second_surname
     staff.first_surname = createStaffDto.first_surname
-    staff.job_title = createStaffDto.job_title
+    staff.job_title = createStaffDto.job_title ?? 'nurse'
     staff.date_of_birth = createStaffDto.date_of_birth
     staff.telephone_number = createStaffDto.telephone_number
     if (createStaffDto.user_id) {
 
       staff.user_id = createStaffDto.user_id
-      console.log({userid: staff.user_id});
+      console.log({ userid: staff.user_id });
     }
     return await this.staffRepository.save(staff)
   }
@@ -46,28 +46,28 @@ export class StaffService {
   }
 
   async getProfile(userId: number) {
-    const staff = await this.staffRepository.findOneBy({user_id: userId})
+    const staff = await this.staffRepository.findOneBy({ user_id: userId })
     return staff
   }
 
   async update(id: number, updateStaffDto: UpdateStaffDto) {
     console.log({ id, updateStaffDto });
 
-    const staff = await this.staffRepository.findOneBy({ id: id?id:0 })
-    console.log({staff});
-    
+    const staff = await this.staffRepository.findOneBy({ id: id ? id : 0 })
+    console.log({ staff });
+
     if (!staff && updateStaffDto.user_id) {
       console.log('newprofile');
       let newProfile = new CreateStaffDto()
       newProfile.name = updateStaffDto.name
       newProfile.second_surname = updateStaffDto.second_surname
       newProfile.first_surname = updateStaffDto.first_surname
-      newProfile.job_title = updateStaffDto.job_title
+      newProfile.job_title = updateStaffDto.job_title ?? 'nurse'
       newProfile.date_of_birth = updateStaffDto.date_of_birth
       newProfile.telephone_number = updateStaffDto.telephone_number
       newProfile.user_id = updateStaffDto.user_id
-      console.log({newProfile});
-      
+      console.log({ newProfile });
+
       return this.create(newProfile)
     }
     if (!staff)

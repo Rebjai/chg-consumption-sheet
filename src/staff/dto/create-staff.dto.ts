@@ -19,8 +19,8 @@ export class CreateStaffDto {
 
     @ApiProperty()
     @IsString()
-    @IsNotEmpty()
-    job_title: string;
+    @IsOptional()
+    job_title?: string;
     
     @IsDateString()
     @IsNotEmpty()
