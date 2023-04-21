@@ -19,7 +19,6 @@ const ormConfig: DataSourceOptions | TypeOrmModuleOptions = {
     password: 'chg_pass',
     database: 'chg_consumption_sheet',
     entities: [User, Room, Patient, Staff, Product, ConsumptionDetail, ConsumptionSheet],
-    synchronize: true,
     // dropSchema:true,
 }
 const ormAsyncConfig: TypeOrmModuleAsyncOptions = {

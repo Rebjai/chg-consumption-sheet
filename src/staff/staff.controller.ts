@@ -1,7 +1,8 @@
+import { StaffQueryDto } from './dto/staff-query.dto';
 import { ApiResponseInterceptor } from './../common/interceptors/api-response.interceptor';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Put, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Put, Request, Query } from '@nestjs/common';
 import { StaffService } from './staff.service';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
@@ -19,8 +20,8 @@ export class StaffController {
   }
 
   @Get()
-  findAll() {
-    return this.staffService.findAll();
+  findAll(@Query() staffQueryDto: StaffQueryDto) {
+    return this.staffService.findAll(staffQueryDto);
   }
 
   @Get('profile')

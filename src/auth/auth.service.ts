@@ -1,3 +1,4 @@
+import { StaffService } from './../staff/staff.service';
 import { CreatedByAdminDto } from './dtos/created-by-admin.dto';
 import { CreateUserDto } from './../users/dto/create-user.dto';
 import { AuthDto } from './dtos/auth.dto';
@@ -13,7 +14,9 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService,
+  constructor(
+    private staffService: StaffService,
+    private usersService: UsersService,
     @Inject(
       BcryptHashService) private hashService: ChgHashService,
     private configService: ConfigService,
@@ -63,11 +66,14 @@ export class AuthService {
   }
 
   async registerByAdmin(registerDto: CreatedByAdminDto): Promise<Tokens> {
-    const newUser = { ...registerDto }
+    const { staff_id,...newUser } = registerDto
+    
     const password = await this.hashService.hash('pass1234')
     const user: User = await this.usersService.create({...newUser, password, password_confirmation: password})
-    console.log({user});
-    
+    console.log({user, staff_id});
+    if (staff_id) {
+      const staff = this.staffService.setUser(staff_id, user.id)
+    }
     const tokens = this.validateJwt({ email: user.email, password: 'pass1234' })
     return tokens
   }

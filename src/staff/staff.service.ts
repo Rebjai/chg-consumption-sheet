@@ -1,3 +1,4 @@
+import { StaffQueryDto } from './dto/staff-query.dto';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Staff } from './entities/staff.entity';
@@ -5,7 +6,7 @@ import { Injectable, NotFoundException, UnprocessableEntityException } from '@ne
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
-import { Repository } from 'typeorm';
+import { Repository, IsNull, DataSource, getConnection } from 'typeorm';
 
 @Injectable()
 export class StaffService {
@@ -33,7 +34,14 @@ export class StaffService {
     return await this.staffRepository.save(staff)
   }
 
-  async findAll(): Promise<Staff[]> {
+  async findAll(staffQueryDto?: StaffQueryDto): Promise<Staff[]> {
+    console.log({staffQueryDto});
+    if (staffQueryDto?.unassigned) {
+      console.log('unassigned');
+      
+      return await this.staffRepository.find({ where: { user_id: IsNull() } });
+
+    }
     return await this.staffRepository.find();
   }
 
@@ -46,9 +54,23 @@ export class StaffService {
   }
 
   async getProfile(userId: number) {
-    const staff = await this.staffRepository.findOneBy({ user_id: userId })
+    const staff = await this.staffRepository.findOne({
+      relations: ['profile'],
+      where: { user_id: userId }
+    })
     return staff
   }
+
+  async setUser(staff_id: number, user_id: number) {
+    console.log({staff_id, user_id});
+    
+    const updatedStaff = await this.staffRepository.update({id: staff_id},{user_id});
+    console.log({updatedStaff});
+    
+    return updatedStaff.affected > 0; // Returns true if the update was successful
+  }
+
+
 
   async update(id: number, updateStaffDto: UpdateStaffDto) {
     console.log({ id, updateStaffDto });

@@ -1,3 +1,4 @@
+import { StaffModule } from './../staff/staff.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { UsersModule } from './../users/users.module';
@@ -11,7 +12,7 @@ import { ChgHashService } from "./Interfaces/chg-hash-service.Interface";
 import jwtConfig from './jwt.config';
 @Module({
   controllers: [AuthController],
-  imports: [UsersModule, PassportModule, JwtModule.registerAsync(jwtConfig)],
+  imports: [UsersModule, StaffModule, PassportModule, JwtModule.registerAsync(jwtConfig)],
   providers: [AuthService, BcryptHashService, LocalStrategy, JwtStrategy]
 })
 export class AuthModule { }

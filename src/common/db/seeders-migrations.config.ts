@@ -14,7 +14,6 @@ const migrationsConfig: DataSourceOptions & ConnectionOptions = {
     database: process.env.DB_NAME,
     entities: ['dist/src/**/entities/*.entity.js'],
     namingStrategy: new SnakeNamingStrategy(),
-    // dropSchema:true,
     migrations: ['dist/src/common/db/migrations/*Migration.js'],
     seeds: ['dist/src/common/db/seeders/*.js'],
     factories: ['src/common/db/factories/**/*{.ts,.js}']

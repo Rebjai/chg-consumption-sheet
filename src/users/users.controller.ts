@@ -34,9 +34,11 @@ export class UsersController {
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto | UpdateUserByAdminDto, @Request() req) {
     console.log({user: req.user});
     if (req.user.role == UserRole.ADMIN) {
+      console.log('adminz');
       return this.usersService.updateByAdmin(+id, updateUserDto);
     }
     
+    console.log('normal');
     return this.usersService.update(+id, updateUserDto);
   }
 

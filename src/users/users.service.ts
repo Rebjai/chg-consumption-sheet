@@ -1,7 +1,8 @@
+import { StaffService } from './../staff/staff.service';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -10,8 +11,11 @@ import { UpdateUserByAdminDto } from './dto/update-user-by-admin.dto';
 
 @Injectable()
 export class UsersService {
-  
-  constructor(@InjectRepository(User) private usersRepository: Repository<User>) { }
+
+  constructor(
+    @InjectRepository(User) private usersRepository: Repository<User>,
+    @Inject(StaffService) private staffService: StaffService
+  ) { }
   async create(createUserDto: CreateUserDto): Promise<User> {
     await this.emailIsUnique(createUserDto.email)
     const errors = await validate(plainToInstance(CreateUserDto, createUserDto))
@@ -22,12 +26,12 @@ export class UsersService {
       throw new UnprocessableEntityException('passwords don\'t match');
     }
     const users = await this.usersRepository.count() > 0
-    console.log({users})
+    console.log({ users })
     const user = new User()
     user.email = createUserDto.email
     user.password = createUserDto.password
-    user.role = !users? 10: createUserDto.role ?? 1
-    
+    user.role = !users ? 10 : createUserDto.role ?? 1
+
     return this.usersRepository.save(user);
   }
   async emailIsUnique(email: string): Promise<Boolean> {
@@ -42,7 +46,10 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<User> {
-    const user = this.usersRepository.findOneBy({ id })
+    const user = await this.usersRepository.findOne({
+      relations: ['profile'],
+      where: { id }
+    })
     if (!user)
       throw new NotFoundException();
     return user
@@ -66,14 +73,20 @@ export class UsersService {
 
   async updateByAdmin(id: number, updateUserDto: UpdateUserByAdminDto) {
     const user = await this.findOne(id)
+    console.log({ updateUserDto });
+    if (updateUserDto.staff_id) {
+
+      const staffUpdated = this.staffService.setUser(updateUserDto.staff_id, user.id)
+      console.log({ staffUpdated });
+    }
     if (user.email !== updateUserDto.email) {
       const emailIsUnique = await this.emailIsUnique(updateUserDto.email)
       user.email = updateUserDto.email
     }
     user.role = updateUserDto.role
-    
 
-    this.usersRepository.save(user)
+
+    await this.usersRepository.save(user)
     return user;
   }
 
