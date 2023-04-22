@@ -62,6 +62,6 @@ export class ConsumptionDetailsService {
   }
 
   async remove(id: number) {
-    return await this.consumptionDetailRepository.delete({ id });
+    return await this.consumptionDetailRepository.softDelete({ id });
   }
 }
