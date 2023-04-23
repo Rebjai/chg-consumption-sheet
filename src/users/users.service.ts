@@ -1,3 +1,4 @@
+import UserRole  from 'src/users/enums/user-role.enum';
 import { StaffService } from './../staff/staff.service';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
@@ -96,7 +97,13 @@ export class UsersService {
     this.usersRepository.save(user)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.findOne(id)
+    if (user.role == UserRole.USER) {
+      if (user.profile) {
+        this.staffService.remove(user.profile.id)
+      }
+    }
+    return this.usersRepository.softDelete({id});
   }
 }
