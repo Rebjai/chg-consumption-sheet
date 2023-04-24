@@ -52,9 +52,19 @@ export class ConsumptionSheetsService {
 
   async findOne(id: number) {
     try {
-      const consumptionSheet = await this.consumptionSheetRepository.findOneOrFail({ where: { id }, withDeleted: true, relations: ['consumptions']});
+      const consumptionSheet = await this.consumptionSheetRepository
+        .createQueryBuilder('consumptionSheet')
+        .leftJoinAndSelect('consumptionSheet.consumptions', 'consumptions', 'consumptions.deleted_at IS NULL')
+        .withDeleted()
+        .where('consumptionSheet.id = :id', { id })
+        .getOne();
+
+
+
       return consumptionSheet
     } catch (error) {
+      console.log({error});
+      
       throw new NotFoundException("Consumption sheet not found");
     }
   }
