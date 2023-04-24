@@ -10,7 +10,7 @@ import { ConsumptionDetailsModule } from './consumption-details/consumption-deta
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import {ormAsyncConfig} from '../ormconfig'
+import { ormAsyncConfig } from '../ormconfig'
 import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -18,10 +18,10 @@ import { ProductSatCategoryModule } from './product-sat-category/product-sat-cat
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client'),
+      rootPath: join(__dirname, '..', '..', 'client'),
     }),
-    ConfigModule.forRoot({isGlobal: true}),TypeOrmModule.forRootAsync(ormAsyncConfig),RoomsModule, ProductsModule, StaffModule, ConsumptionSheetsModule, PatientsModule, ConsumptionDetailsModule, UsersModule, AuthModule, ProductSatCategoryModule],
+    ConfigModule.forRoot({ isGlobal: true }), TypeOrmModule.forRootAsync(ormAsyncConfig), RoomsModule, ProductsModule, StaffModule, ConsumptionSheetsModule, PatientsModule, ConsumptionDetailsModule, UsersModule, AuthModule, ProductSatCategoryModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

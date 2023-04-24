@@ -37,10 +37,7 @@ export class StaffService {
   async findAll(staffQueryDto?: StaffQueryDto): Promise<Staff[]> {
     console.log({staffQueryDto});
     if (staffQueryDto?.unassigned) {
-      console.log('unassigned');
-      
-      return await this.staffRepository.find({ where: { user_id: IsNull() } });
-
+      return await this.staffRepository.find({ withDeleted: true,where: { user_id: IsNull() } });
     }
     return await this.staffRepository.find();
   }
