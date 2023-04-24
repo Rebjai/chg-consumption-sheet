@@ -37,7 +37,7 @@ export class RoomsService {
   async findAll(query: QueryRoomDto, pagination: PaginationDto = new PaginationDto()) : Promise<Pagination<Room>>{
     // const rooms: Room[] = await this.roomsRepository.find()
     
-    return paginate<Room>(this.roomsRepository, pagination, query);
+    return paginate<Room>(this.roomsRepository, pagination, {where: query});
   }
 
   async findOne(id: number) {
