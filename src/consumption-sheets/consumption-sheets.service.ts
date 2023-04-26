@@ -58,13 +58,8 @@ export class ConsumptionSheetsService {
         .withDeleted()
         .where('consumptionSheet.id = :id', { id })
         .getOne();
-
-
-
       return consumptionSheet
     } catch (error) {
-      console.log({error});
-      
       throw new NotFoundException("Consumption sheet not found");
     }
   }

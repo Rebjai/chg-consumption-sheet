@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { HttpStatus, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -6,7 +6,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api')
-  app.useGlobalPipes(new ValidationPipe({transform:true, whitelist: true}));
+  app.useGlobalPipes(new ValidationPipe({transform:true, whitelist: true, errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY}));
   const config = new DocumentBuilder()
   .setTitle('CHG Consumption Seets')
   .setDescription('Api for keeping track of consumption sheets and its tasks')
