@@ -21,12 +21,12 @@ export class ConsumptionDetailsService {
   }
 
   async create(consumptionId: number, createConsumptionDetailDto: CreateConsumptionDetailDto) {
-    const consumptionSheet = await this.consumptionSheetsService.findOne(consumptionId?consumptionId:createConsumptionDetailDto.consumption_sheet_id)
+    const consumptionSheet = await this.consumptionSheetsService.findOne(consumptionId ? consumptionId : createConsumptionDetailDto.consumption_sheet_id)
     if (consumptionSheet.total) {
       return null
     }
     const product = await this.productsService.findOne(createConsumptionDetailDto.product_id)
-    const staff = createConsumptionDetailDto.staff_id == 0 ? null:await this.staffService.findOne(createConsumptionDetailDto.staff_id)
+    const staff = createConsumptionDetailDto.staff_id == 0 ? null : await this.staffService.findOne(createConsumptionDetailDto.staff_id)
     const user = await this.usersService.findOne(createConsumptionDetailDto.user_id)
     const consumptionDetail = new ConsumptionDetail()
     consumptionDetail.consumption_sheet = consumptionSheet
@@ -43,9 +43,9 @@ export class ConsumptionDetailsService {
 
   async findAll(consumption_sheet_id?: number) {
     if (consumption_sheet_id) {
-      return this.consumptionDetailRepository.find({ where: { consumption_sheet_id }, relations: ['product', 'consumption_sheet'] });
+      return this.consumptionDetailRepository.find({ where: { consumption_sheet_id }, relations: ['product'], order: { created_at: 'DESC' } });
     }
-    return this.consumptionDetailRepository.find({relations: ['product', 'consumption_sheet']});
+    return this.consumptionDetailRepository.find({ relations: ['product', 'consumption_sheet'], order: { created_at: 'DESC' } });
   }
 
   async findOne(id: number) {
