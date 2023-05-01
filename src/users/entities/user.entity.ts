@@ -26,7 +26,7 @@ export class User extends CHGBaseEntity {
   rt?: string
 
   @OneToOne(valtype => Staff, profile => profile.user, { eager: true })
-  profile: Staff
+  profile?: Staff
 
 }
 

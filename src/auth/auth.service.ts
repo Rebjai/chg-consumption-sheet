@@ -66,11 +66,11 @@ export class AuthService {
   }
 
   async registerByAdmin(registerDto: CreatedByAdminDto): Promise<Tokens> {
-    const { staff_id,...newUser } = registerDto
-    
+    const { staff_id, ...newUser } = registerDto
+
     const password = await this.hashService.hash('pass1234')
-    const user: User = await this.usersService.create({...newUser, password, password_confirmation: password})
-    console.log({user, staff_id});
+    const user: User = await this.usersService.create({ ...newUser, password, password_confirmation: password })
+    console.log({ user, staff_id });
     if (staff_id) {
       const staff = this.staffService.setUser(staff_id, user.id)
     }
@@ -111,6 +111,11 @@ export class AuthService {
     const tokens = await this.getTokens(user);
     await this.usersService.updateRtHash(user.id, tokens.refresh_token);
     return tokens;
+  }
+
+  async profile(userId: number) {
+    const user = await this.usersService.findOne(userId)
+    return user
   }
   // async updateRtHash(userId: number, rt: string): Promise<void> {
   //   const hash = await this.hashService.hash(rt);

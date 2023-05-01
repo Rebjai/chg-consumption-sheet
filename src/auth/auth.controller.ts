@@ -29,7 +29,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    return req.user;
+    return this.authService.profile(req.user.userId);
   }
   
   @Post('register-by-admin')

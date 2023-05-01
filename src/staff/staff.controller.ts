@@ -32,8 +32,8 @@ export class StaffController {
 
   @Put('profile')
   updateProfile(@Request() req, @Body() updateStaffDto: UpdateStaffDto) {
-    updateStaffDto.user_id= +req.user.userId
-    console.log({user: req.user})
+    updateStaffDto.user_id = +req.user.userId
+    console.log({ user: req.user })
     console.log({ updateStaffDto });
     // -------------
     return this.staffService.update(+updateStaffDto.id, updateStaffDto);
