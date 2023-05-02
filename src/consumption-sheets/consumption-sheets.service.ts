@@ -58,6 +58,8 @@ export class ConsumptionSheetsService {
         .withDeleted()
         .where('consumptionSheet.id = :id', { id })
         .getOne();
+
+      consumptionSheet.total = consumptionSheet.total ?? consumptionSheet.consumptions.reduce((total, val) => total + val.total, 0)
       return consumptionSheet
     } catch (error) {
       throw new NotFoundException("Consumption sheet not found");

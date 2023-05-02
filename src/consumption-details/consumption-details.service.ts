@@ -22,7 +22,7 @@ export class ConsumptionDetailsService {
 
   async create(consumptionId: number, createConsumptionDetailDto: CreateConsumptionDetailDto) {
     const consumptionSheet = await this.consumptionSheetsService.findOne(consumptionId ? consumptionId : createConsumptionDetailDto.consumption_sheet_id)
-    if (consumptionSheet.total) {
+    if (consumptionSheet.total && consumptionSheet.deleted_at) {
       return null
     }
     const product = await this.productsService.findOne(createConsumptionDetailDto.product_id)
