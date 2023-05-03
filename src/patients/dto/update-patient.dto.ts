@@ -1,8 +1,11 @@
-import { IsBoolean } from 'class-validator';
+import { IsBoolean, IsNotEmpty } from 'class-validator';
 import { PartialType } from '@nestjs/swagger';
 import { CreatePatientDto } from './create-patient.dto';
+import { Type } from 'class-transformer';
 
 export class UpdatePatientDto extends PartialType(CreatePatientDto) {
+    @IsNotEmpty()
     @IsBoolean()
-    active: Boolean
+    @Type(() => Boolean)
+    active: boolean
 }

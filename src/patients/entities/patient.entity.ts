@@ -16,7 +16,7 @@ export class Patient extends CHGBaseEntity {
     date_of_birth: Date;
 
     @Column({ default: true })
-    active: Boolean
+    active: boolean
 
     @OneToOne(type => ConsumptionSheet, consumptionSheet => consumptionSheet.patient)
     consumption_sheet?: ConsumptionSheet
