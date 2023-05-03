@@ -106,6 +106,7 @@ export class ConsumptionSheetsService {
     const subtotal = consumptionSheet.consumptions.reduce((prev, curr) => prev + curr.total, 0)
     // const netTotal = subtotal * 1.16
     consumptionSheet.total = subtotal
+    this.patientsService.remove(consumptionSheet.patient_id)
     this.consumptionSheetRepository.save(consumptionSheet)
 
     return consumptionSheet

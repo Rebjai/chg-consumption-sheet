@@ -72,8 +72,7 @@ export class PatientsService {
   }
 
   async remove(id: number) {
-    // const patient = await this.patientsRepository.findOneBy({id})
-    // return await this.patientsRepository.softRemove(patient);
-    return await this.patientsRepository.softRemove({ id });
+    const patient = await this.findOne(id)
+    return await this.patientsRepository.softRemove({id: patient.id});
   }
 }
