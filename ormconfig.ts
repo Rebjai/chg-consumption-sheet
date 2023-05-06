@@ -8,8 +8,10 @@ import { Product } from "src/products/entities/product.entity"
 import { Room } from "src/rooms/entities/room.entity"
 import { Staff } from "src/staff/entities/staff.entity"
 import { User } from "src/users/entities/user.entity"
-import { DataSourceOptions } from "typeorm"
+import { DatabaseType, DataSourceOptions } from "typeorm"
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 const ormConfig: DataSourceOptions | TypeOrmModuleOptions = {
     type: 'postgres',
@@ -25,17 +27,16 @@ const ormAsyncConfig: TypeOrmModuleAsyncOptions = {
     imports: [ConfigModule],
     inject: [ConfigService],
     useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
+        type: configService.get<DatabaseType>('DB_DRIVER') as "postgres" | "mysql" | "mariadb",
         host: 'localhost',
-        port: 5432,
+        port: configService.get<number>('DB_PORT'),
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [User, Room, Patient, Staff, Product, ProductSatCategory, ConsumptionDetail, ConsumptionSheet],
-        // synchronize: true,
         namingStrategy: new SnakeNamingStrategy(),
-        // dropSchema:true,
-    })
-}
+    }),
+};
+
 export default ormConfig
 export { ormConfig , ormAsyncConfig}

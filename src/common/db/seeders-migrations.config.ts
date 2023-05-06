@@ -6,7 +6,7 @@ import { ConnectionOptions } from "typeorm-seeding";
 
 dotenvExpand.expand(dotenv.config());
 const migrationsConfig: DataSourceOptions & ConnectionOptions = {
-    type: 'postgres',
+    type: process.env.DB_DRIVER as "postgres" | "mysql" | "mariadb",
     host: process.env.DB_HOST,
     port: +process.env.DB_PORT,
     username: process.env.DB_USER,
