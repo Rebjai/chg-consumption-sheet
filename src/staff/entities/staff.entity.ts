@@ -5,7 +5,7 @@ import { Profile } from './../../common/entities/Profile';
 
 @Entity()
 export class Staff extends Profile{
-  @Column()
+  @Column({type:'varchar'})
   telephone_number: string;
 
   @Column()

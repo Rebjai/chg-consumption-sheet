@@ -1,27 +1,52 @@
-import {
-    MigrationInterface,
-    QueryRunner
-} from "typeorm"
+import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
 export class RoomTableMigration1680371912823 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(
-            `CREATE TABLE "room" (
-                "id" SERIAL NOT NULL,
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                "name" character varying NOT NULL,
-                "status" integer NOT NULL,
-                "type" integer NOT NULL,
-                CONSTRAINT "PK_c6d46db005d623e691b2fbcba23" PRIMARY KEY ("id")
-            )`
-        );
+        await queryRunner.createTable(new Table({
+            name: "room",
+            columns: [
+                {
+                    name: "id",
+                    type: "serial",
+                    isPrimary: true,
+                },
+                {
+                    name: "created_at",
+                    type: "timestamp",
+                    default: "now()",
+                    isNullable: false,
+                },
+                {
+                    name: "updated_at",
+                    type: "timestamp",
+                    default: "now()",
+                    isNullable: false,
+                },
+                {
+                    name: "deleted_at",
+                    type: "timestamp",
+                    isNullable: true,
+                },
+                {
+                    name: "name",
+                    type: "varchar",
+                    isNullable: false,
+                },
+                {
+                    name: "status",
+                    type: "integer",
+                    isNullable: false,
+                },
+                {
+                    name: "type",
+                    type: "integer",
+                    isNullable: false,
+                },
+            ],
+        }), true);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP TABLE "room"`);
+        await queryRunner.dropTable("room");
     }
-
 }

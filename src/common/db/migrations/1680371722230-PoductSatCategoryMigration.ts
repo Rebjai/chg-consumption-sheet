@@ -1,27 +1,58 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner, Table, Index, TableIndex } from 'typeorm';
 
 export class PoductSatCategoryMigration1680371722230 implements MigrationInterface {
     name = 'PoductSatCategoryMigration1680371722230'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(
-            `CREATE TABLE "product_sat_category" (
-                "id" SERIAL NOT NULL,
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                "code" bigint NOT NULL,
-                "name" character varying NOT NULL,
-                CONSTRAINT "PK_fa539f9bee8de82df4a98a425a9" PRIMARY KEY ("id")
-            )`
+        await queryRunner.createTable(
+            new Table({
+                name: 'product_sat_category',
+                columns: [
+                    {
+                        name: 'id',
+                        type: 'integer',
+                        isPrimary: true,
+                        isGenerated: true,
+                        generationStrategy: 'increment'
+                    },
+                    {
+                        name: 'created_at',
+                        type: 'timestamp',
+                        default: 'now()'
+                    },
+                    {
+                        name: 'updated_at',
+                        type: 'timestamp',
+                        default: 'now()'
+                    },
+                    {
+                        name: 'deleted_at',
+                        type: 'timestamp',
+                        isNullable: true
+                    },
+                    {
+                        name: 'code',
+                        type: 'bigint'
+                    },
+                    {
+                        name: 'name',
+                        type: 'varchar'
+                    }
+                ]
+            })
         );
-        await queryRunner.query(`CREATE INDEX "IDX_1e6f6cf1071046caa42ba53b0a" ON "product_sat_category" ("code") `);
+
+        await queryRunner.createIndex(
+            'product_sat_category',
+            new TableIndex({
+                name: 'IDX_1e6f6cf1071046caa42ba53b0a',
+                columnNames: ['code']
+            })
+        );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP INDEX "public"."IDX_1e6f6cf1071046caa42ba53b0a"`);
-        await queryRunner.query(`DROP TABLE "product_sat_category"`);
+        await queryRunner.dropIndex('product_sat_category', 'IDX_1e6f6cf1071046caa42ba53b0a');
+        await queryRunner.dropTable('product_sat_category');
     }
-
 }
-

@@ -1,29 +1,66 @@
-import {
-    MigrationInterface,
-    QueryRunner
-} from "typeorm"
+import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
 export class PatientTableMigration1680371931067 implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.createTable(
+      new Table({
+        name: "patient",
+        columns: [
+          {
+            name: "id",
+            type: "serial",
+            isPrimary: true,
+          },
+          {
+            name: "created_at",
+            type: "timestamp",
+            default: "now()",
+            isNullable: false,
+          },
+          {
+            name: "updated_at",
+            type: "timestamp",
+            default: "now()",
+            isNullable: false,
+          },
+          {
+            name: "deleted_at",
+            type: "timestamp",
+            isNullable: true,
+          },
+          {
+            name: "first_surname",
+            type: "varchar",
+            isNullable: false,
+          },
+          {
+            name: "second_surname",
+            type: "varchar",
+            isNullable: false,
+          },
+          {
+            name: "name",
+            type: "varchar",
+            isNullable: false,
+          },
+          {
+            name: "date_of_birth",
+            type: "timestamp",
+            isNullable: false,
+          },
+          {
+            name: "active",
+            type: "boolean",
+            default: true,
+            isNullable: false,
+          },
+        ],
+      }),
+      true
+    );
+  }
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(
-            `CREATE TABLE "patient" (
-                "id" SERIAL NOT NULL,
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                "first_surname" character varying NOT NULL,
-                "second_surname" character varying NOT NULL,
-                "name" character varying NOT NULL,
-                "date_of_birth" TIMESTAMP NOT NULL,
-                "active" boolean NOT NULL DEFAULT true,
-                CONSTRAINT "PK_8dfa510bb29ad31ab2139fbfb99" PRIMARY KEY ("id")
-            )`
-        );
-    }
-
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP TABLE "patient"`);
-    }
-
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable("patient");
+  }
 }

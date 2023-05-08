@@ -1,29 +1,67 @@
-import {
-    MigrationInterface,
-    QueryRunner
-} from "typeorm"
+import { MigrationInterface, QueryRunner, Table, TableIndex } from "typeorm";
 
 export class UserTableMigration1680371872036 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(
-            `CREATE TABLE "user" (
-                "id" SERIAL NOT NULL,
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                "email" character varying NOT NULL,
-                "password" character varying NOT NULL,
-                "role" "public"."user_role_enum" NOT NULL DEFAULT '1',
-                "rt" character varying,
-                CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"),
-                CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id")
-            )`
+        await queryRunner.createTable(
+            new Table({
+                name: "user",
+                columns: [
+                    {
+                        name: "id",
+                        type: "serial",
+                        isPrimary: true,
+                        isUnique:true
+                    },
+                    {
+                        name: "created_at",
+                        type: "timestamp",
+                        isNullable: false,
+                        default: "now()",
+                    },
+                    {
+                        name: "updated_at",
+                        type: "timestamp",
+                        isNullable: false,
+                        default: "now()",
+                    },
+                    {
+                        name: "deleted_at",
+                        type: "timestamp",
+                        isNullable: true,
+                    },
+                    {
+                        name: "email",
+                        type: "varchar",
+                        isNullable: false,
+                        isUnique: true,
+                        isPrimary: true
+                    },
+                    {
+                        name: "password",
+                        type: "varchar",
+                        isNullable: false,
+                    },
+                    {
+                        name: "role",
+                        type: "enum",
+                        enum: ["1", "2", "3"],
+                        default: "'1'",
+                    },
+                    {
+                        name: "rt",
+                        type: "varchar",
+                        isNullable: true,
+                    },
+                ],
+            }),
+            true
         );
+
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP TABLE "user"`);
+        await queryRunner.dropTable("user");
     }
 
 }

@@ -1,22 +1,61 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner, TableColumn, TableForeignKey } from "typeorm";
 
 export class AddedUserFieldToConsumptionDetailMigration1681612576151 implements MigrationInterface {
     name = 'AddedUserFieldToConsumptionDetailMigration1681612576151'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "consumption_detail" ADD "user_id" integer NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "consumption_detail" DROP CONSTRAINT "FK_c6769cc6c8f0fa486979d64d2f1"`);
-        await queryRunner.query(`ALTER TABLE "consumption_detail" ALTER COLUMN "staff_id" DROP NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "consumption_detail" ADD CONSTRAINT "FK_c6769cc6c8f0fa486979d64d2f1" FOREIGN KEY ("staff_id") REFERENCES "staff"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "consumption_detail" ADD CONSTRAINT "FK_4f79974192afdc1fb9c10e41233" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.addColumn("consumption_detail", new TableColumn({
+            name: "user_id",
+            type: "bigint",
+            unsigned: true,
+            isNullable: false
+        }));
+
+        await queryRunner.dropForeignKey("consumption_detail", "FK_c6769cc6c8f0fa486979d64d2f1");
+
+        await queryRunner.changeColumn("consumption_detail", "staff_id", new TableColumn({
+            name: "staff_id",
+            type: "bigint",
+            unsigned: true,
+            isNullable: true
+        }));
+
+        await queryRunner.createForeignKey("consumption_detail", new TableForeignKey({
+            name: "FK_c6769cc6c8f0fa486979d64d2f1",
+            columnNames: ["staff_id"],
+            referencedColumnNames: ["id"],
+            referencedTableName: "staff",
+            onDelete: "NO ACTION",
+            onUpdate: "NO ACTION"
+        }));
+
+        await queryRunner.createForeignKey("consumption_detail", new TableForeignKey({
+            name: "FK_4f79974192afdc1fb9c10e41233",
+            columnNames: ["user_id"],
+            referencedColumnNames: ["id"],
+            referencedTableName: "user",
+            onDelete: "NO ACTION",
+            onUpdate: "NO ACTION"
+        }));
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "consumption_detail" DROP CONSTRAINT "FK_4f79974192afdc1fb9c10e41233"`);
-        await queryRunner.query(`ALTER TABLE "consumption_detail" DROP CONSTRAINT "FK_c6769cc6c8f0fa486979d64d2f1"`);
-        await queryRunner.query(`ALTER TABLE "consumption_detail" ALTER COLUMN "staff_id" SET NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "consumption_detail" ADD CONSTRAINT "FK_c6769cc6c8f0fa486979d64d2f1" FOREIGN KEY ("staff_id") REFERENCES "staff"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "consumption_detail" DROP COLUMN "user_id"`);
+        await queryRunner.dropForeignKey("consumption_detail", "FK_4f79974192afdc1fb9c10e41233");
+        await queryRunner.dropForeignKey("consumption_detail", "FK_c6769cc6c8f0fa486979d64d2f1");
+        await queryRunner.changeColumn("consumption_detail", "staff_id", new TableColumn({
+            name: "staff_id",
+            type: "bigint",
+            unsigned:true,
+            isNullable: false
+        }));
+        await queryRunner.createForeignKey("consumption_detail", new TableForeignKey({
+            name: "FK_c6769cc6c8f0fa486979d64d2f1",
+            columnNames: ["staff_id"],
+            referencedColumnNames: ["id"],
+            referencedTableName: "staff",
+            onDelete: "NO ACTION",
+            onUpdate: "NO ACTION"
+        }));
+        await queryRunner.dropColumn("consumption_detail", "user_id");
     }
-
 }

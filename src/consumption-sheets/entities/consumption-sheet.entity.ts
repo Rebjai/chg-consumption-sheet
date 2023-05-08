@@ -6,14 +6,14 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, OneToMany,
 
 @Entity()
 export class ConsumptionSheet extends CHGBaseEntity {
-    @Column()
+    @Column({type:'bigint', unsigned: true, unique:true})
     patient_id: number
 
     @OneToOne(type => Patient, { eager: true })
     @JoinColumn()
     patient: Patient;
 
-    @Column()
+    @Column({type:'bigint', unsigned: true})
     room_id: number
 
     @ManyToOne(type => Room, room => room.consumptionSheets, { eager: true })
@@ -22,7 +22,7 @@ export class ConsumptionSheet extends CHGBaseEntity {
     @Column()
     diagnosis: string;
 
-    @Column()
+    @Column({type: 'varchar'})
     doctor: string;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 , nullable: true})

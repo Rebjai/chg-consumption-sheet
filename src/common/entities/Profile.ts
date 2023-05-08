@@ -4,19 +4,19 @@ import { CHGBaseEntity } from "./chgBaseEntity.entity"
 
 @Entity()
 export abstract class Profile extends CHGBaseEntity {
-    @Column()
+    @Column({type:'varchar'})
     name: string;
 
-    @Column()
+    @Column({type:'varchar'})
     first_surname: string;
-
-    @Column()
+    
+    @Column({type:'varchar'})
     second_surname: string;
 
     @Column()
     date_of_birth: Date
 
-    @Column({nullable:true})
+    @Column({type:'bigint', unsigned: true, nullable:true})
     user_id?: number;
 
     @ManyToOne(type => User)
