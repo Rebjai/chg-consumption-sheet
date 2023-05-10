@@ -22,8 +22,4 @@ export class CreateConsumptionDetailDto {
     @IsNumber()
     user_id: number;
 
-    // @IsNotEmpty()
-    // @IsNumber()
-    // total: number;
-    
 }
