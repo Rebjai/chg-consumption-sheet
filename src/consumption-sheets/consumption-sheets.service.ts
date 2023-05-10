@@ -56,6 +56,7 @@ export class ConsumptionSheetsService {
         .createQueryBuilder('consumptionSheet')
         .leftJoinAndSelect('consumptionSheet.consumptions', 'consumptions', 'consumptions.deleted_at IS NULL')
         .withDeleted()
+        .leftJoinAndSelect('consumptionSheet.patient', 'patient')
         .where('consumptionSheet.id = :id', { id })
         .getOne();
 
