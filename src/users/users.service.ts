@@ -1,9 +1,12 @@
-import UserRole  from 'src/users/enums/user-role.enum';
+import { UpdateUserAccountDto } from './dto/update-user-account.dto';
+import ChgHashService from '../auth/Interfaces/chg-hash-service.Interface'
+import BcryptHashService from '../auth/bcrypt-hash.service';
+import UserRole from 'src/users/enums/user-role.enum';
 import { StaffService } from './../staff/staff.service';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Inject, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -15,7 +18,8 @@ export class UsersService {
 
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
-    @Inject(StaffService) private staffService: StaffService
+    @Inject(StaffService) private staffService: StaffService,
+    @Inject(BcryptHashService) private hashService: ChgHashService,
   ) { }
   async create(createUserDto: CreateUserDto): Promise<User> {
     await this.emailIsUnique(createUserDto.email)
@@ -71,6 +75,30 @@ export class UsersService {
     this.usersRepository.save(user)
     return user;
   }
+  async updateAccount(id: number, updateUserDto: UpdateUserAccountDto): Promise<User> {
+    const user = await this.findOne(id)
+    const errors = await validate(plainToInstance(UpdateUserAccountDto, updateUserDto))
+    if (errors.length > 0)
+      throw new UnprocessableEntityException(errors.map(errorValue => Object.values(errorValue.constraints))[0]);
+
+    if (!await this.hashService.compare(updateUserDto.current_password, user.password)) {
+      throw new UnprocessableEntityException(["Wrong Password"]);
+    }
+    if (user.email !== updateUserDto.email) {
+      const emailIsUnique = await this.emailIsUnique(updateUserDto.email)
+      user.email = updateUserDto.email
+    }
+
+    if (!!updateUserDto.password && updateUserDto.password != '') {
+      const passwordMatch = updateUserDto.password == updateUserDto.password_confirmation
+      if (!passwordMatch) {
+        throw new UnprocessableEntityException(['passwords don\'t match']);
+      }
+      user.password = await this.hashService.hash(updateUserDto.password)
+    }
+    this.usersRepository.save(user)
+    return user;
+  }
 
   async updateByAdmin(id: number, updateUserDto: UpdateUserByAdminDto) {
     const user = await this.findOne(id)
@@ -104,6 +132,6 @@ export class UsersService {
         this.staffService.remove(user.profile.id)
       }
     }
-    return this.usersRepository.softDelete({id});
+    return this.usersRepository.softDelete({ id });
   }
 }

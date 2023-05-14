@@ -13,6 +13,7 @@ import jwtConfig from './jwt.config';
 @Module({
   controllers: [AuthController],
   imports: [UsersModule, StaffModule, PassportModule, JwtModule.registerAsync(jwtConfig)],
-  providers: [AuthService, BcryptHashService, LocalStrategy, JwtStrategy]
+  providers: [AuthService, BcryptHashService, LocalStrategy, JwtStrategy],
+  exports: [BcryptHashService]
 })
 export class AuthModule { }
