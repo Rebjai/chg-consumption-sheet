@@ -4,3 +4,4 @@ enum UserRole {
     ADMIN = 10,
 }
 export default UserRole
+export {UserRole}
