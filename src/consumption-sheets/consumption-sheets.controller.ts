@@ -16,12 +16,12 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 @Roles(UserRole.ADMIN, UserRole.SUPERVISOR)
 export class ConsumptionSheetsController {
   constructor(private readonly consumptionSheetsService: ConsumptionSheetsService) { }
-  
+
   @Post()
   create(@Body() createConsumptionSheetDto: CreateConsumptionSheetDto) {
     return this.consumptionSheetsService.create(createConsumptionSheetDto);
   }
-  
+
   @Get()
   findAll(@Query() query?: { closed?: boolean }) {
     if (query.closed!!) {
@@ -43,7 +43,9 @@ export class ConsumptionSheetsController {
   @Roles(UserRole.ADMIN, UserRole.SUPERVISOR)
   @Delete(':id/close')
   close(@Param('id') id: string, @Request() req) {
-    if (req.user.role !== UserRole.ADMIN || req.user.role !== UserRole.SUPERVISOR) {
+    if (req.user.role !== UserRole.ADMIN && req.user.role != UserRole.SUPERVISOR) {
+      console.log('forb');
+      
       throw new ForbiddenException();
 
     }
@@ -53,7 +55,7 @@ export class ConsumptionSheetsController {
   @Roles(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req) {
-    if (req.user.role !== UserRole.ADMIN) {
+    if (req.user.role !== UserRole.ADMIN && req.user.role !== UserRole.SUPERVISOR) {
       throw new ForbiddenException();
 
     }
