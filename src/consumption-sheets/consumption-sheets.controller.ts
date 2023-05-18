@@ -43,7 +43,7 @@ export class ConsumptionSheetsController {
   @Roles(UserRole.ADMIN, UserRole.SUPERVISOR)
   @Delete(':id/close')
   close(@Param('id') id: string, @Request() req) {
-    if (req.user.role !== UserRole.ADMIN) {
+    if (req.user.role !== UserRole.ADMIN || req.user.role !== UserRole.SUPERVISOR) {
       throw new ForbiddenException();
 
     }
