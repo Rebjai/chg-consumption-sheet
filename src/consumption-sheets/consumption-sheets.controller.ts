@@ -47,12 +47,12 @@ export class ConsumptionSheetsController {
       console.log('forb');
       
       throw new ForbiddenException();
-
+      
     }
     return this.consumptionSheetsService.close(+id);
   }
-
-  @Roles(UserRole.ADMIN)
+  
+  @Roles(UserRole.ADMIN, UserRole.SUPERVISOR)
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req) {
     if (req.user.role !== UserRole.ADMIN && req.user.role !== UserRole.SUPERVISOR) {
