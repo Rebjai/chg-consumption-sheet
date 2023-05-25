@@ -35,6 +35,13 @@ export class ConsumptionDetail extends CHGBaseEntity{
   @JoinColumn()
   user: User;
 
+  @ManyToOne(type => User)
+  @JoinColumn()
+  deleted_by?: User;
+
+  @Column({nullable: true})
+  deleted_by_id?: number;
+
   @Column()
   quantity: number;
 

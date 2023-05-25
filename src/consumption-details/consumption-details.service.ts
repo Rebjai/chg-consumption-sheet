@@ -1,8 +1,9 @@
+import { UserRole } from '../users/enums/user-role.enum';
 import { StaffService } from './../staff/staff.service';
 import { ProductsService } from './../products/products.service';
 import { ConsumptionSheetsService } from './../consumption-sheets/consumption-sheets.service';
 import { ConsumptionDetail } from './entities/consumption-detail.entity';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateConsumptionDetailDto } from './dto/create-consumption-detail.dto';
 import { UpdateConsumptionDetailDto } from './dto/update-consumption-detail.dto';
@@ -61,7 +62,15 @@ export class ConsumptionDetailsService {
     return consumptionDetail;
   }
 
-  async remove(id: number) {
+  async remove(id: number, userID: number) {
+    const deletedDetail = await this.findOne(id)
+    const user = await this.usersService.findOne(userID)
+    if (user.id != deletedDetail.user_id && user.role == UserRole.USER) {
+      throw new UnprocessableEntityException(['No tienes los permisos para borrar este registro']);
+
+    }
+    deletedDetail.deleted_by = user
+    this.consumptionDetailRepository.save(deletedDetail)
     return await this.consumptionDetailRepository.softDelete({ id });
   }
 }

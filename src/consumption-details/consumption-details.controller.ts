@@ -1,3 +1,4 @@
+import { User } from './../users/entities/user.entity';
 import { UserRole } from 'src/users/enums/user-role.enum';
 import { Roles } from './../common/decorators/roles.decorator';
 import { ApiResponseInterceptor } from './../common/interceptors/api-response.interceptor';
@@ -43,9 +44,10 @@ export class ConsumptionDetailsController {
     return this.consumptionDetailsService.update(+id, updateConsumptionDetailDto);
   }
 
-  @Roles(UserRole.ADMIN, UserRole.SUPERVISOR)
+  @Roles(UserRole.ADMIN, UserRole.SUPERVISOR, UserRole.USER)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.consumptionDetailsService.remove(+id);
+  remove(@Param('id') id: string, @Request() req) {
+    const userId = req.user.userId
+    return this.consumptionDetailsService.remove(+id, +userId);
   }
 }
