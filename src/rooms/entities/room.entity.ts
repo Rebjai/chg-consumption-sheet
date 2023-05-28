@@ -18,5 +18,8 @@ export class Room extends CHGBaseEntity{
 
   @OneToMany( type => ConsumptionSheet, consumptionSheet => consumptionSheet.room)
   consumptionSheets?: ConsumptionSheet
-  
+
+  @Column({type: 'int', default: 1})
+  area_id? : number
+
 }

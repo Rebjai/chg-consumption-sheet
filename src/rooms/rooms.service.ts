@@ -19,7 +19,6 @@ export class RoomsService {
   ) { }
 
   async create(createRoomDto: CreateRoomDto) {
-    
     const errors = await validate(plainToInstance(CreateRoomDto, createRoomDto));
     if (errors.length > 0) {
       throw new HttpException({ message: 'Invalid data', errors }, HttpStatus.BAD_REQUEST);
@@ -31,13 +30,13 @@ export class RoomsService {
     room.name = createRoomDto.name;
     room.status = createRoomDto.status;
     room.type = createRoomDto.type;
+    room.area_id = createRoomDto.area_id;
     return await this.roomsRepository.save(room);
   }
 
-  async findAll(query: QueryRoomDto, pagination: PaginationDto = new PaginationDto()) : Promise<Pagination<Room>>{
+  async findAll(query: QueryRoomDto, pagination: PaginationDto = new PaginationDto()): Promise<Pagination<Room>> {
     // const rooms: Room[] = await this.roomsRepository.find()
-    
-    return paginate<Room>(this.roomsRepository, pagination, {where: query});
+    return paginate<Room>(this.roomsRepository, pagination, { where: query });
   }
 
   async findOne(id: number) {
@@ -61,6 +60,7 @@ export class RoomsService {
     room.name = updateRoomDto.name;
     room.status = updateRoomDto.status;
     room.type = updateRoomDto.type;
+    room.area_id = updateRoomDto.area_id;
     return await this.roomsRepository.save(room);
   }
 
@@ -76,7 +76,6 @@ export class RoomsService {
     }
     if (status !== RoomStatus.AVAILABLE && room.status == status) {
       throw new BadRequestException("The room has that status already");
-      
     }
     room.status = status
     return await this.roomsRepository.save(room)

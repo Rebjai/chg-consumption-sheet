@@ -18,4 +18,9 @@ export class CreateRoomDto {
     @IsInt()
     @IsNotEmpty()
     type: number
+
+    @ApiProperty()
+    @IsInt()
+    @IsNotEmpty()
+    area_id: number
 }
