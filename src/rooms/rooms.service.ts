@@ -36,8 +36,25 @@ export class RoomsService {
 
   async findAll(query: QueryRoomDto, pagination: PaginationDto = new PaginationDto()): Promise<Pagination<Room>> {
     // const rooms: Room[] = await this.roomsRepository.find()
-    const {status, type, include} = query
-    return paginate<Room>(this.roomsRepository, pagination, {where:[{status, type}, {id: include}]});
+    const { status, type, include } = query
+    const whereClause = [];
+
+    if (status) {
+      whereClause.push({ status });
+    }
+
+    if (type) {
+      whereClause.push({ type });
+    }
+
+    if (include) {
+      whereClause.push({ id: include });
+    }
+    if (whereClause.length) {
+      return paginate<Room>(this.roomsRepository, pagination, { where: whereClause });
+
+    }
+    return paginate<Room>(this.roomsRepository, pagination);
   }
 
   async findOne(id: number) {
