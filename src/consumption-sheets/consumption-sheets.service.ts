@@ -55,9 +55,11 @@ export class ConsumptionSheetsService {
       const consumptionSheet = await this.consumptionSheetRepository
         .createQueryBuilder('consumptionSheet')
         .leftJoinAndSelect('consumptionSheet.consumptions', 'consumptions', 'consumptions.deleted_at IS NULL')
+        .leftJoinAndSelect('consumptions.product', 'product')
+        .leftJoinAndSelect('product.category', 'category')
         .withDeleted()
-        .leftJoinAndSelect('consumptionSheet.patient', 'patient')
         .where('consumptionSheet.id = :id', { id })
+        .leftJoinAndSelect('consumptionSheet.patient', 'patient')
         .getOne();
 
       consumptionSheet.total = consumptionSheet.total ?? consumptionSheet.consumptions.reduce((total, val) => total + val.total, 0)

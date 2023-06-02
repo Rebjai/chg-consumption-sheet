@@ -42,15 +42,15 @@ export class ConsumptionDetailsService {
     // return consumptionDetail;
   }
 
-  async findAll(consumption_sheet_id?: number) {
+  async findAll(consumption_sheet_id?: number): Promise<ConsumptionDetail[]> {
     if (consumption_sheet_id) {
-      return this.consumptionDetailRepository.find({ where: { consumption_sheet_id }, relations: ['product'], order: { created_at: 'DESC' } });
+      return this.consumptionDetailRepository.find({ where: { consumption_sheet_id }, relations: ['product', 'product.category'], order: { created_at: 'DESC' } });
     }
     return this.consumptionDetailRepository.find({ relations: ['product', 'consumption_sheet'], order: { created_at: 'DESC' } });
   }
 
   async findOne(id: number) {
-    const consumptionDetail = await this.consumptionDetailRepository.findOneBy({ id })
+    const consumptionDetail : ConsumptionDetail = await this.consumptionDetailRepository.findOne({where: {id}, relations: ['product']})
     if (!consumptionDetail)
       throw new NotFoundException("Consumption Detail not found");
 
