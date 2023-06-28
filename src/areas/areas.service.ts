@@ -1,28 +1,30 @@
+import { PaginationDto } from './../common/dto/pagination.dto';
 import { Area } from './entities/area.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAreaDto } from './dto/create-area.dto';
 import { UpdateAreaDto } from './dto/update-area.dto';
 import { Repository } from 'typeorm';
+import { paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class AreasService {
 
-  constructor(@InjectRepository(Area) private areaRepository: Repository<Area>)
-  {}
+  constructor(@InjectRepository(Area) private areasRepository: Repository<Area>) { }
 
   create(createAreaDto: CreateAreaDto) {
     const newArea = new Area()
-    newArea.name =  createAreaDto.name
-    return this.areaRepository.save(newArea);
+    newArea.name = createAreaDto.name
+    return this.areasRepository.save(newArea);
   }
 
-  findAll() {
-    return `This action returns all areas`;
+  findAll(pagination: PaginationDto = new PaginationDto()) {
+    let result = paginate<Area>(this.areasRepository, pagination)
+    return result;
   }
 
   findOne(id: number) {
-    const found = this.areaRepository.findOne({where: {id}})
+    const found = this.areasRepository.findOne({ where: { id } })
     if (!found) {
       throw new NotFoundException()
     }
@@ -34,6 +36,6 @@ export class AreasService {
   }
 
   remove(id: number) {
-    return this.areaRepository.softDelete({id})
+    return this.areasRepository.softDelete({ id })
   }
 }

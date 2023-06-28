@@ -1,9 +1,10 @@
+import { PaginationDto } from './../common/dto/pagination.dto';
 import { UserRole } from './../users/enums/user-role.enum';
 import { Roles } from './../common/decorators/roles.decorator';
 import { RolesGuard } from './../auth/guards/roles.guard';
 import { ApiResponseInterceptor } from './../common/interceptors/api-response.interceptor';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Query } from '@nestjs/common';
 import { AreasService } from './areas.service';
 import { CreateAreaDto } from './dto/create-area.dto';
 import { UpdateAreaDto } from './dto/update-area.dto';
@@ -21,8 +22,8 @@ export class AreasController {
   }
   
   @Get()
-  findAll() {
-    return this.areasService.findAll();
+  findAll(@Query() pagination? : PaginationDto) {
+    return this.areasService.findAll(pagination);
   }
 
   @Get(':id')
