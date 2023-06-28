@@ -1,3 +1,4 @@
+import { Area } from './../../areas/entities/area.entity';
 import { Product } from './../../products/entities/product.entity';
 import { CHGBaseEntity } from './../../common/entities/chgBaseEntity.entity';
 import { ConsumptionSheet } from './../../consumption-sheets/entities/consumption-sheet.entity';
@@ -13,6 +14,13 @@ export class ConsumptionDetail extends CHGBaseEntity{
 
   @Column()
   consumption_sheet_id: number;
+
+  @Column({type: 'int', nullable: true})
+  area_id? : number
+
+  @ManyToOne(type => Area)
+  @JoinColumn()
+  area?: Area;
 
   @Column()
   product_id: number;
