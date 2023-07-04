@@ -40,9 +40,9 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
   async emailIsUnique(email: string): Promise<Boolean> {
-    const userExists = await this.usersRepository.findOneBy({ email })
+    const userExists = await this.usersRepository.findOne({where: {email}, withDeleted: true})
     if (userExists)
-      throw new UnprocessableEntityException();
+      throw new UnprocessableEntityException(['Email already in use']);
     return !userExists
   }
 
@@ -127,6 +127,8 @@ export class UsersService {
 
   async remove(id: number) {
     const user = await this.findOne(id)
+    user.email +='-d:'+Date.now().toString()
+    await this.usersRepository.save(user)
     if (user.role == UserRole.USER) {
       if (user.profile) {
         this.staffService.remove(user.profile.id)
