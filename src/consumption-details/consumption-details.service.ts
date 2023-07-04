@@ -31,13 +31,15 @@ export class ConsumptionDetailsService {
     const product = await this.productsService.findOne(createConsumptionDetailDto.product_id)
     const staff = createConsumptionDetailDto.staff_id == 0 ? null : await this.staffService.findOne(createConsumptionDetailDto.staff_id)
     const user = await this.usersService.findOne(createConsumptionDetailDto.user_id)
-    const area = await this.areasService.findOne(createConsumptionDetailDto.area_id)
     const consumptionDetail = new ConsumptionDetail()
+    if (createConsumptionDetailDto.area_id) {
+      const area = await this.areasService.findOne(createConsumptionDetailDto.area_id)
+      consumptionDetail.area = area
+    }
     consumptionDetail.consumption_sheet = consumptionSheet
     consumptionDetail.product = product
     consumptionDetail.staff = staff
     consumptionDetail.user = user
-    consumptionDetail.area = area
     consumptionDetail.quantity = createConsumptionDetailDto.quantity
     consumptionDetail.total = product.price * createConsumptionDetailDto.quantity
     return await this.consumptionDetailRepository.save(consumptionDetail)
@@ -69,13 +71,11 @@ export class ConsumptionDetailsService {
     const product = await this.productsService.findOne(updateConsumptionDetailDto.product_id)
     const staff = updateConsumptionDetailDto.staff_id == 0 ? null : await this.staffService.findOne(updateConsumptionDetailDto.staff_id)
     const user = await this.usersService.findOne(updateConsumptionDetailDto.user_id)
-    const area = await this.areasService.findOne(updateConsumptionDetailDto.area_id)
     const consumptionDetail = await this.findOne(id)
     consumptionDetail.consumption_sheet = consumptionSheet
     consumptionDetail.product = product
     consumptionDetail.staff = staff
     consumptionDetail.user = user
-    consumptionDetail.area = area
     consumptionDetail.quantity = updateConsumptionDetailDto.quantity
     consumptionDetail.total = updateConsumptionDetailDto.total
     return await this.consumptionDetailRepository.save(consumptionDetail)

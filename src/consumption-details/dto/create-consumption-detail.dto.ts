@@ -24,6 +24,6 @@ export class CreateConsumptionDetailDto {
 
     @IsOptional()
     @IsNumber()
-    area_id: number;
+    area_id?: number;
 
 }
