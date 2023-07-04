@@ -22,4 +22,8 @@ export class CreateConsumptionDetailDto {
     @IsNumber()
     user_id: number;
 
+    @IsOptional()
+    @IsNumber()
+    area_id: number;
+
 }
