@@ -1,0 +1,26 @@
+version: '3'
+services:
+  nestjs-app:
+    image: node:14
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    command: npm run start:dev
+    depends_on:
+      - postgres-db
+
+  postgres-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: chg
+      POSTGRES_PASSWORD: chg_pass
+      POSTGRES_DB: chg_consumption_sheet
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Map a volume for PostgreSQL data storage
+
+volumes:
+  postgres_data:
