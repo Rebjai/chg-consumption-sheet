@@ -2,12 +2,13 @@ import UserRole from 'src/users/enums/user-role.enum';
 import { ApiResponseInterceptor } from './../common/interceptors/api-response.interceptor';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Put, Request, ForbiddenException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Put, Request, ForbiddenException, Query, Res, Logger, NotFoundException } from '@nestjs/common';
 import { ConsumptionSheetsService } from './consumption-sheets.service';
 import { CreateConsumptionSheetDto } from './dto/create-consumption-sheet.dto';
 import { UpdateConsumptionSheetDto } from './dto/update-consumption-sheet.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Response } from 'express';
 
 @ApiTags('consumption-sheets')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -15,6 +16,8 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 @UseInterceptors(ApiResponseInterceptor)
 @Roles(UserRole.ADMIN, UserRole.SUPERVISOR)
 export class ConsumptionSheetsController {
+  private readonly logger = new Logger(ConsumptionSheetsController.name);
+
   constructor(private readonly consumptionSheetsService: ConsumptionSheetsService) { }
 
   @Post()
@@ -52,7 +55,7 @@ export class ConsumptionSheetsController {
     return this.consumptionSheetsService.close(+id);
   }
   
-  @Roles(UserRole.ADMIN, UserRole.SUPERVISOR)
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req) {
     if (req.user.role !== UserRole.ADMIN && req.user.role !== UserRole.SUPERVISOR) {
@@ -60,5 +63,31 @@ export class ConsumptionSheetsController {
 
     }
     return this.consumptionSheetsService.remove(+id);
+  }
+
+  @Roles(UserRole.ADMIN, UserRole.SUPERVISOR)
+  @Get(':id/report')
+  async downloadReport(@Param('id') id: number, @Res() res: Response) {
+    try {
+      const { filename, buffer } = await this.consumptionSheetsService.getReport(id);
+
+      res.set({
+        'Content-Disposition': `attachment; filename=${filename}`,
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+
+      res.end(buffer);
+
+      // Log successful downloads
+      this.logger.log(`Downloaded report for ID ${id}`);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        res.status(404).json({ error: 'Report not found' });
+      } else {
+        res.status(500).json({ error: 'An error occurred while generating the report' });
+        // Log failed downloads
+        this.logger.error(`Error while downloading report for ID ${id}: ${error.message}`);
+      }
+    }
   }
 }

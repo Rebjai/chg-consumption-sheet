@@ -9,6 +9,7 @@ import { IsNull, Not, Repository } from 'typeorm';
 import { CreateConsumptionSheetDto } from './dto/create-consumption-sheet.dto';
 import { UpdateConsumptionSheetDto } from './dto/update-consumption-sheet.dto';
 import { ConsumptionSheet } from './entities/consumption-sheet.entity';
+import * as XLSX from 'xlsx';
 
 @Injectable()
 export class ConsumptionSheetsService {
@@ -113,5 +114,35 @@ export class ConsumptionSheetsService {
     this.consumptionSheetRepository.save(consumptionSheet)
 
     return consumptionSheet
+  }
+
+  async getReport(id: number) {
+    const consumptionSheet = await this.findOne(id);
+    const sheetData = this.prepareSheetData(consumptionSheet);
+
+    const excelBuffer = this.generateExcelBuffer(sheetData);
+
+    const filename = `consumption_report_${id}.xlsx`;
+
+    return { filename, buffer: excelBuffer };
+  }
+
+  private prepareSheetData(consumptionSheet: ConsumptionSheet) {
+    const sheetData: [any] = [['Product Name', 'Category', 'Quantity', 'Total']];
+
+    for (const consumption of consumptionSheet.consumptions) {
+      const productName = consumption.product?.name || 'N/A';
+      const categoryName = consumption.product?.category?.name || 'N/A';
+      sheetData.push([productName, categoryName, consumption.quantity, consumption.total]);
+    }
+    sheetData.push([null, null, null, `SUM (D2:D${sheetData.length}`])
+
+    return sheetData;
+  }
+  private generateExcelBuffer(sheetData: any[][]) {
+    const ws = XLSX.utils.aoa_to_sheet(sheetData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Consumption Report');
+    return XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
   }
 }
