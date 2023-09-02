@@ -135,7 +135,7 @@ export class ConsumptionSheetsService {
       const categoryName = consumption.product?.category?.name || 'N/A';
       sheetData.push([productName, categoryName, consumption.quantity, consumption.total]);
     }
-    sheetData.push([null, null, null, `SUM (D2:D${sheetData.length}`])
+    sheetData.push([null, null, null, `SUM (D2:D${sheetData.length})`])
 
     return sheetData;
   }
