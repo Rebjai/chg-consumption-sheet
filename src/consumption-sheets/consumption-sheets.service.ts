@@ -128,12 +128,12 @@ export class ConsumptionSheetsService {
   }
 
   private prepareSheetData(consumptionSheet: ConsumptionSheet) {
-    const sheetData: [any] = [['Product Name', 'Category', 'Quantity', 'Total']];
+    const sheetData: [any] = [['Product Name', 'Category', 'SAT Code', 'Quantity', 'Total']];
 
     for (const consumption of consumptionSheet.consumptions) {
       const productName = consumption.product?.name || 'N/A';
       const categoryName = consumption.product?.category?.name || 'N/A';
-      sheetData.push([productName, categoryName, consumption.quantity, consumption.total]);
+      sheetData.push([productName, categoryName, consumption.product.category.code, consumption.quantity, consumption.total]);
     }
     sheetData.push([null, null, null, `SUM (D2:D${sheetData.length})`])
 
