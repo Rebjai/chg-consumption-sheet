@@ -26,6 +26,9 @@ export class AuthService {
     const user = await this.usersService.findOneByUsername(username);
     const isPasswordCorrect = await this.hashService.compare(pass, user.password)
 
+    if (!user || !isPasswordCorrect) {
+      throw new UnprocessableEntityException('Invalid Credentials');
+    }
     if (isPasswordCorrect) {
       const { password, ...result } = user;
       return result;

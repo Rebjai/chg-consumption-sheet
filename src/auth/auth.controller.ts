@@ -12,13 +12,14 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) {}
-    @UseGuards(LocalAuthGuard)
-    @Post('login')
-    async login(@Request() req, @Body() auth : AuthDto) {
-        return this.authService.login(req.user);
-    }
-    
+  constructor(private authService: AuthService) { }
+  
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  async login(@Request() req, @Body() auth: AuthDto) {
+    return this.authService.login(req.user);
+  }
+
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   registerUser(@Body() dto: CreateUserDto): Promise<Tokens> {
@@ -31,7 +32,7 @@ export class AuthController {
   getProfile(@Request() req) {
     return this.authService.profile(req.user.userId);
   }
-  
+
   @Post('register-by-admin')
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard)
@@ -39,5 +40,5 @@ export class AuthController {
     // req.user.role ==
     return this.authService.registerByAdmin(dto);
   }
-  
+
 }
