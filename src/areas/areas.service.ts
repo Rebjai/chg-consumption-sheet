@@ -23,10 +23,10 @@ export class AreasService {
     return result;
   }
 
-  findOne(id: number) {
-    const found = this.areasRepository.findOne({ where: { id } })
+  async findOne(id: number) {
+    const found = await this.areasRepository.findOne({ where: { id } })
     if (!found) {
-      throw new NotFoundException()
+      throw new NotFoundException("Area not found")
     }
     return found;
   }

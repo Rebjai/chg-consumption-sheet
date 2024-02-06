@@ -7,9 +7,10 @@ import { ConsumptionDetailsService } from './consumption-details.service';
 import { ConsumptionDetailsController } from './consumption-details.controller';
 import { ConsumptionDetail } from './entities/consumption-detail.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AreasModule } from 'src/areas/areas.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ConsumptionDetail]), ConsumptionSheetsModule, ProductsModule, StaffModule, UsersModule],
+  imports: [TypeOrmModule.forFeature([ConsumptionDetail]), ConsumptionSheetsModule, ProductsModule, StaffModule, UsersModule, AreasModule],
   controllers: [ConsumptionDetailsController],
   providers: [ConsumptionDetailsService],
 })

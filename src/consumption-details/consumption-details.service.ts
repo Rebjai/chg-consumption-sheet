@@ -19,7 +19,7 @@ export class ConsumptionDetailsService {
     @Inject(ProductsService) private productsService: ProductsService,
     @Inject(StaffService) private staffService: StaffService,
     @Inject(UsersService) private usersService: UsersService,
-    @Inject(UsersService) private areasService: AreasService,
+    @Inject(AreasService) private areasService: AreasService,
   ) {
   }
 
