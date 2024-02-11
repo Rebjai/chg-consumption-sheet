@@ -48,7 +48,6 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id, role: user.role };
     return {
       access_token: this.jwtService.sign(payload),
-      user
     };
   }
 
@@ -118,7 +117,8 @@ export class AuthService {
 
   async profile(userId: number) {
     const user = await this.usersService.findOne(userId)
-    return user
+    const { password, ...result } = user;
+    return result
   }
   // async updateRtHash(userId: number, rt: string): Promise<void> {
   //   const hash = await this.hashService.hash(rt);
