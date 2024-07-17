@@ -36,6 +36,7 @@ const ormAsyncConfig: TypeOrmModuleAsyncOptions = {
         database: configService.get<string>('DB_NAME'),
         entities: [User, Room, Patient, Staff, Product, ProductSatCategory, ConsumptionDetail, ConsumptionSheet, Area],
         namingStrategy: new SnakeNamingStrategy(),
+        // synchronize: true,
     }),
 };
 
