@@ -5,21 +5,21 @@ import { Response } from 'express';
 @Controller('reports')
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
-  // Trae a los pacientes
+  // gets patients
   @Get('prueba')
   async obtenerDatos() {
     return await this.reportsService.trayendoDatos();
   }
-  // Trae el pdf con la hoja de registro del paciente
-  @Get('bill/:patientId')
+  // get the pdf with the patient consumption sheet
+  @Get('bill/:sheetId')
   async getBillReport(
-    @Param('patientId') patientId: string,
+    @Param('sheetId') patientId: string,
     @Res() response: Response,
   ) {
     const patientIdNum = parseInt(
       patientId,
       10,
-    ); /*Convierte el parámetro de ruta a número*/
+    ); //Convert path parameter to number
     const pdfDoc = await this.reportsService.getBillReport(patientIdNum);
 
     response.setHeader('Content-Type', 'application/pdf');
@@ -27,20 +27,10 @@ export class ReportsController {
     pdfDoc.pipe(response);
     pdfDoc.end();
   }
-  //Trae el reporte de consumo del paciente
-  @Get('patients/:patientId')
+  //get the patient's consumption report
+  @Get('consumptionSheet/:sheetId')
   async getPatientReport(@Param('patientId') patientId: string) {
-    const patientIdNum = parseInt(patientId, 10); // Convierte el parámetro de ruta a número si es necesario
+    const patientIdNum = parseInt(patientId, 10); // Convert path parameter to number
     return this.reportsService.getPatientReport(patientIdNum);
   }
-
-  /*@Get('bill')
-async getBillReport(@Res() response: Response) {
-  const pdfDoc = await this.reportsService.getBillReport();
-
-  response.setHeader('Content-Type', 'application/pdf');
-  pdfDoc.info.Title = 'Factura';
-  pdfDoc.pipe(response);
-  pdfDoc.end();
-}*/
 }
