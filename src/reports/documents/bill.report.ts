@@ -4,7 +4,6 @@ import {
   TDocumentDefinitions,
 } from 'pdfmake/interfaces';
 import { Formatter } from '../../helpers/formatter';
-/*import { medicamentos } from './medicamentos.product';*/
 
 const logoVirgen: Content = {
   image: 'src/assets/virgen3.png',
@@ -34,16 +33,14 @@ const styles: StyleDictionary = {
 };
 
 export const billReport = (patientData): TDocumentDefinitions => {
-  // console.log('Patient Data:', patientData);
   const total = patientData.insumos.reduce(
     (acc, patient) => acc + patient.importetotal,
     0,
   );
-  // console.log(total);
   return {
     content: [
       {
-        // Contenido del encabezado
+        // Header content
         columns: [
           logoVirgen,
           {
@@ -73,11 +70,11 @@ export const billReport = (patientData): TDocumentDefinitions => {
             alignment: 'right',
           },
         ],
-        // Contenido del encabezado
+        // Header content
       },
 
       {
-        // Contenido de la tabla de medicamentos
+        // Medication table content
         margin: [0, 20],
         // layout: 'lightHorizontalLines',
         table: {
@@ -117,12 +114,12 @@ export const billReport = (patientData): TDocumentDefinitions => {
       },
 
       {
-        // Contenido de la tabla de medicamentos
+        // Medication table content
         margin: [0, 0],
         // layout: 'lightHorizontalLines',
         table: {
           widths: [80, '*', 'auto', 'auto'],
-          headerRows: 1, // Con esta linea, en cada página mostrará los encabezados de la tabla.
+          headerRows: 1, // With this line, each page will show the table headers
           body: [
             [
               { text: 'CANTIDAD', alignment: 'center' },
@@ -137,8 +134,6 @@ export const billReport = (patientData): TDocumentDefinitions => {
               { text: Formatter.currency(patientData.importetotal), bold: true, alignment: 'right' },
             ]),
 
-            //Total de la tabla
-            // [{}, {}, {}, {}],
             [
               {},
               {},
@@ -163,7 +158,7 @@ export const billReport = (patientData): TDocumentDefinitions => {
             ],
           ],
         },
-        // Contenido de la tabla de medicamentos
+        // Medication table content
       },
     ],
     styles: styles,

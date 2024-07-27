@@ -5,7 +5,7 @@ import { Patient } from '../patients/entities/patient.entity';
 import { billReport } from './documents/bill.report';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConsumptionDetail } from '../consumption-details/entities/consumption-detail.entity';
+import { ConsumptionSheet } from '../consumption-sheets/entities/consumption-sheet.entity';
 
 @Injectable()
 export class ReportsService {
@@ -13,136 +13,43 @@ export class ReportsService {
     private readonly printer: PrinterService,
     @InjectRepository(Patient)
     private readonly patientRepository: Repository<Patient>,
-    @InjectRepository(ConsumptionDetail)
-    private consumptionDetailRepository: Repository<ConsumptionDetail>,
+    @InjectRepository(ConsumptionSheet)
+    private consumptionSheetRepository: Repository<ConsumptionSheet>,
   ) {}
 
-  async trayendoDatos(): Promise<Patient[]> {
+  async getData(): Promise<Patient[]> {
     return await this.patientRepository.find();
   }
 
-  async getBillReport(patientId: number): Promise<PDFKit.PDFDocument> {
-    const patientData = await this.getPatientReport(patientId);
-    // console.log('Contenido de patientData: ', patientData);
+  async getBillReport(consumptionSheetId: number): Promise<PDFKit.PDFDocument> {
+    const patientData = await this.getPatientReport(consumptionSheetId);
     const docDefinition: TDocumentDefinitions = billReport(patientData);
     return this.printer.createPdf(docDefinition);
   }
 
-  /*async getPatientReport(patientId: number) {
-    const queryBuilder = this.consumptionDetailRepository
-      .createQueryBuilder('cd')
-      .select([
-        'SUM(cd.quantity) AS Cantidad',
-        'pr.name AS Descripcion',
-        'psc.code AS Codigo',
-        'SUM(cd.total) AS ImporteTotal',
-      ])
-      .innerJoin('cd.product', 'pr')
-      .innerJoin('cd.consumption_sheet', 'cs')
-      .innerJoin('pr.category', 'psc')
-      .where('cs.patient_id = :patientId', { patientId })
-      .groupBy('pr.name, psc.code');
-
-    const dataString = await await queryBuilder.getRawMany();
-    console.log('datos traidos de la BDD: ', dataString);
-    const dataRefactor = dataString.map((row) => ({
-      cantidad: Number(row.cantidad),
-      descripcion: row.descripcion,
-      codigo: row.codigo,
-      importetotal: Number(row.importetotal),
-    }));
-    // console.log(dataRefactor);
-    return dataRefactor;
-  }*/
-
-  /*async getPatientReport(patientId: number) {
-    // Consulta para obtener la información del paciente
-    const patientInfoQuery = this.consumptionDetailRepository
-      .createQueryBuilder('cd')
-      .select([
-        "to_char(cs.admission_date, 'DD         MM       YYYY') AS FechaIngreso",
-        'cs.doctor AS NombreMedico',
-        'r.name AS NumeroCuarto',
-        "p.first_surname || ' ' || p.second_surname || ' ' || p.name AS NombrePaciente",
-        'cs.diagnosis AS Diagnostico',
-        "to_char(cs.admission_date, 'HH12:MI AM') AS HoraIngreso",
-      ])
-      .innerJoin('cd.consumption_sheet', 'cs')
-      .innerJoin('cs.patient', 'p')
-      .innerJoin('cs.room', 'r')
-      .where('cs.patient_id = :patientId', { patientId })
-      .groupBy(
-        'cs.admission_date, cs.doctor, r.name, p.first_surname, p.second_surname, p.name, cs.diagnosis',
-      )
-      .getRawOne();
-
-    // Consulta para obtener la lista de insumos
-    const insumosQuery = this.consumptionDetailRepository
-      .createQueryBuilder('cd')
-      .select([
-        'SUM(cd.quantity) AS Cantidad',
-        'pr.name AS Descripcion',
-        'psc.code AS Codigo',
-        'SUM(cd.total) AS ImporteTotal',
-      ])
-      .innerJoin('cd.product', 'pr')
-      .innerJoin('cd.consumption_sheet', 'cs')
-      .innerJoin('pr.category', 'psc')
-      .where('cs.patient_id = :patientId', { patientId })
-      .groupBy('pr.name, psc.code')
-      .getRawMany();
-
-    // Ejecuta ambas consultas
-    const [patientInfo, insumos] = await Promise.all([
-      patientInfoQuery,
-      insumosQuery,
-    ]);
-    // Imprimir los datos traídos de la BDD
-    /!*console.log('Datos del paciente traídos de la BDD:', patientInfo);
-    console.log('Lista de insumos traídos de la BDD:', insumos);*!/
-
-    // Refactoriza los datos de los insumos
-    const insumosRefactor = insumos.map((row) => ({
-      cantidad: Number(row.cantidad),
-      descripcion: row.descripcion,
-      codigo: row.codigo,
-      importetotal: Number(row.importetotal),
-    }));
-
-    // Resultado final que se enviará
-    const resultadoFinal = {
-      patientInfo,
-      insumos: insumosRefactor,
-    };
-
-    // Imprimir el resultado final que se enviará
-    // console.log('Resultado final que se enviará:', resultadoFinal);
-
-    // Combina los resultados en un solo objeto y lo retorna
-    return resultadoFinal;
-  }*/
-
-  async getPatientReport(patientId: number) {
-    // Obtener la información del paciente junto con sus relaciones
-    const patient = await this.patientRepository.findOne({
-      where: { id: patientId },
+  async getPatientReport(consumptionSheetId: number) {
+    // get the information from the consumption sheet along with its relationships
+    const consumptionSheet = await this.consumptionSheetRepository.findOne({
+      where: { id: consumptionSheetId },
       relations: [
-        'consumption_sheet',
-        'consumption_sheet.room',
-        'consumption_sheet.consumptions',
-        'consumption_sheet.consumptions.product',
-        'consumption_sheet.consumptions.product.category',
+        'patient',
+        'room',
+        'consumptions',
+        'consumptions.product',
+        'consumptions.product.category',
       ],
     });
 
-    // Verificar si se encontró el paciente
-    if (!patient) {
-      throw new Error(`Paciente con ID ${patientId} no encontrado`);
+    // Check if the consumption sheet was found.
+    if (!consumptionSheet) {
+      throw new Error(
+        `Consumption sheet with ID ${consumptionSheetId} not found`,
+      );
     }
 
-    const consumptionSheet = patient.consumption_sheet;
+    const patient = consumptionSheet.patient;
 
-    // Refactorizar la información del paciente
+    // Refactor patient information
     const patientInfo = {
       fechaingreso: this.formatDate(consumptionSheet.admission_date),
       nombremedico: consumptionSheet.doctor,
@@ -152,7 +59,7 @@ export class ReportsService {
       horaingreso: this.formatTime(consumptionSheet.admission_date),
     };
 
-    // Refactorizar los datos de los insumos
+    // Refactor consumption data
     const insumos = consumptionSheet.consumptions.map((consumption) => ({
       cantidad: consumption.quantity,
       descripcion: consumption.product.name,
@@ -160,16 +67,26 @@ export class ReportsService {
       importetotal: consumption.total,
     }));
 
-    // Resultado final que se enviará
+    // Group consumption by description and code
+    const insumosAgrupados = insumos.reduce((acc, curr) => {
+      const key = `${curr.descripcion}-${curr.codigo}`;
+      if (!acc[key]) {
+        acc[key] = { ...curr };
+      } else {
+        acc[key].cantidad += curr.cantidad;
+        acc[key].importetotal += curr.importetotal;
+      }
+      return acc;
+    }, {});
+
+    const insumosRefactor = Object.values(insumosAgrupados);
+
+    // Final result to send
     const reportData = {
       patientInfo,
-      insumos,
+      insumos: insumosRefactor,
     };
-
-    // Imprimir el resultado final que se enviará
-    console.log('Data final que se enviará:', reportData);
-
-    // Combina los resultados en un solo objeto y lo retorna
+    // console.log('Data final que se enviará:', reportData);
     return reportData;
   }
 

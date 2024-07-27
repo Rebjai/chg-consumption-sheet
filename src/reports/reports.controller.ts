@@ -8,7 +8,7 @@ export class ReportsController {
   // gets patients
   @Get('prueba')
   async obtenerDatos() {
-    return await this.reportsService.trayendoDatos();
+    return await this.reportsService.getData();
   }
   // get the pdf with the patient consumption sheet
   @Get('bill/:sheetId')
