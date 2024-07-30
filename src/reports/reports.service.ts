@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { PrinterService } from '../printer/printer.service';
 import { Patient } from '../patients/entities/patient.entity';
@@ -42,7 +42,7 @@ export class ReportsService {
 
     // Check if the consumption sheet was found.
     if (!consumptionSheet) {
-      throw new Error(
+      throw new NotFoundException(
         `Consumption sheet with ID ${consumptionSheetId} not found`,
       );
     }
