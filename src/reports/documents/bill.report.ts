@@ -33,8 +33,8 @@ const styles: StyleDictionary = {
 };
 
 export const billReport = (patientData): TDocumentDefinitions => {
-  const total = patientData.insumos.reduce(
-    (acc, patient) => acc + patient.importetotal,
+  const total = patientData.consumptionsInfo.reduce(
+    (acc, patient) => acc + patient.totalAmount,
     0,
   );
   return {
@@ -81,20 +81,20 @@ export const billReport = (patientData): TDocumentDefinitions => {
           widths: [150, '*', 'auto', 'auto', 'auto'],
           body: [
             [
-              { text: 'HORA DE INGRESO: ' + patientData.patientInfo.horaingreso , fontSize: 10, border: [true, true, false, true] },
-              { text: 'POR EL MÉDICO: '+ patientData.patientInfo.nombremedico, fontSize: 10, border: [false, true, true, true] },
+              { text: 'HORA DE INGRESO: ' + patientData.patientInfo.admissionTime , fontSize: 10, border: [true, true, false, true] },
+              { text: 'POR EL MÉDICO: '+ patientData.patientInfo.medicoName, fontSize: 10, border: [false, true, true, true] },
               { text: 'FECHA', alignment: 'center', fontSize: 10, colSpan: 3 },
               {},
               {},
             ],
             [
               {
-                text: 'CUARTO No: ' + patientData.patientInfo.numerocuarto,
+                text: 'CUARTO No: ' + patientData.patientInfo.roomNumber,
                 fontSize: 10,
                 border: [true, true, false, true],
               },
               {
-                text: 'NOMBRE DEL PACIENTE: ' + patientData.patientInfo.nombrepaciente,
+                text: 'NOMBRE DEL PACIENTE: ' + patientData.patientInfo.patientName,
                 fontSize: 10,
                 border: [false, true, true, true],
               },
@@ -103,9 +103,9 @@ export const billReport = (patientData): TDocumentDefinitions => {
               { text: 'AÑO', fontSize: 10 },
             ],
             [
-              { text: 'DIAGNOSTICO: ' + patientData.patientInfo.diagnostico, fontSize: 10, colSpan: 2 },
+              { text: 'DIAGNOSTICO: ' + patientData.patientInfo.diagnosis, fontSize: 10, colSpan: 2 },
               { text: '' },
-              { text: patientData.patientInfo.fechaingreso, border: [true, false, true, true], colSpan: 3 },
+              { text: patientData.patientInfo.admissionDate, border: [true, false, true, true], colSpan: 3 },
               { text: '', border: [true, false, true, true] },
               { text: '', border: [true, false, true, true] },
             ],
@@ -127,11 +127,11 @@ export const billReport = (patientData): TDocumentDefinitions => {
               { text: 'CODIGO', alignment: 'center' },
               { text: 'IMPORTE', alignment: 'center' },
             ],
-            ...patientData.insumos.map((patientData) => [
-              { text: patientData.cantidad, alignment: 'center' },
-              patientData.descripcion,
-              { text: patientData.codigo, alignment: 'right' },
-              { text: Formatter.currency(patientData.importetotal), bold: true, alignment: 'right' },
+            ...patientData.consumptionsInfo.map((patientData) => [
+              { text: patientData.quantity, alignment: 'center' },
+              patientData.description,
+              { text: patientData.code, alignment: 'right' },
+              { text: Formatter.currency(patientData.totalAmount), bold: true, alignment: 'right' },
             ]),
 
             [

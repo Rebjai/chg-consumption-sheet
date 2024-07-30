@@ -50,41 +50,41 @@ export class ReportsService {
     const patient = consumptionSheet.patient;
 
     // Refactor patient information
-    const patientInfo = {
-      fechaingreso: this.formatDate(consumptionSheet.admission_date),
-      nombremedico: consumptionSheet.doctor,
-      numerocuarto: consumptionSheet.room.name,
-      nombrepaciente: `${patient.first_surname} ${patient.second_surname} ${patient.name}`,
-      diagnostico: consumptionSheet.diagnosis,
-      horaingreso: this.formatTime(consumptionSheet.admission_date),
+    const patientData = {
+      admissionDate: this.formatDate(consumptionSheet.admission_date),
+      medicoName: consumptionSheet.doctor,
+      roomNumber: consumptionSheet.room.name,
+      patientName: `${patient.first_surname} ${patient.second_surname} ${patient.name}`,
+      diagnosis: consumptionSheet.diagnosis,
+      admissionTime: this.formatTime(consumptionSheet.admission_date),
     };
 
     // Refactor consumption data
-    const insumos = consumptionSheet.consumptions.map((consumption) => ({
-      cantidad: consumption.quantity,
-      descripcion: consumption.product.name,
-      codigo: consumption.product.category.code,
-      importetotal: consumption.total,
+    const consumptions = consumptionSheet.consumptions.map((consumption) => ({
+      quantity: consumption.quantity,
+      description: consumption.product.name,
+      code: consumption.product.category.code,
+      totalAmount: consumption.total,
     }));
 
     // Group consumption by description and code
-    const insumosAgrupados = insumos.reduce((acc, curr) => {
-      const key = `${curr.descripcion}-${curr.codigo}`;
+    const groupedConsumptions = consumptions.reduce((acc, curr) => {
+      const key = `${curr.description}-${curr.code}`;
       if (!acc[key]) {
         acc[key] = { ...curr };
       } else {
-        acc[key].cantidad += curr.cantidad;
-        acc[key].importetotal += curr.importetotal;
+        acc[key].quantity += curr.quantity;
+        acc[key].totalAmount += curr.totalAmount;
       }
       return acc;
     }, {});
 
-    const insumosRefactor = Object.values(insumosAgrupados);
+    const consumptionsRefactor = Object.values(groupedConsumptions);
 
     // Final result to send
     const reportData = {
-      patientInfo,
-      insumos: insumosRefactor,
+      patientInfo: patientData,
+      consumptionsInfo: consumptionsRefactor,
     };
     // console.log('Data final que se enviará:', reportData);
     return reportData;

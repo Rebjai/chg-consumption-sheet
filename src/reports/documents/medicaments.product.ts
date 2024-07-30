@@ -1,4 +1,4 @@
-export const medicamentos = [
+export const medicaments = [
   {
     Cantidad: 2,
     Descripcion: 'Paracetamol',

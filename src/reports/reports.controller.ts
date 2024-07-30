@@ -6,21 +6,21 @@ import { Response } from 'express';
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
   // gets patients
-  @Get('prueba')
-  async obtenerDatos() {
+  @Get('test')
+  async getPatientData() {
     return await this.reportsService.getData();
   }
   // get the pdf with the patient consumption sheet
   @Get('bill/:sheetId')
   async getBillReport(
-    @Param('sheetId') patientId: string,
+    @Param('sheetId') sheetId: string,
     @Res() response: Response,
   ) {
-    const patientIdNum = parseInt(
-      patientId,
+    const sheetIdNum = parseInt(
+      sheetId,
       10,
     ); //Convert path parameter to number
-    const pdfDoc = await this.reportsService.getBillReport(patientIdNum);
+    const pdfDoc = await this.reportsService.getBillReport(sheetIdNum);
 
     response.setHeader('Content-Type', 'application/pdf');
     pdfDoc.info.Title = 'Factura';
@@ -29,8 +29,8 @@ export class ReportsController {
   }
   //get the patient's consumption report
   @Get('consumptionSheet/:sheetId')
-  async getPatientReport(@Param('patientId') patientId: string) {
-    const patientIdNum = parseInt(patientId, 10); // Convert path parameter to number
-    return this.reportsService.getPatientReport(patientIdNum);
+  async getPatientReport(@Param('sheetId') sheetId: string) {
+    const sheetIdNum = parseInt(sheetId, 10); // Convert path parameter to number
+    return this.reportsService.getPatientReport(sheetIdNum);
   }
 }
