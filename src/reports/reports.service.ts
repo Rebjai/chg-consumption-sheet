@@ -6,6 +6,7 @@ import { billReport } from './documents/bill.report';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConsumptionSheet } from '../consumption-sheets/entities/consumption-sheet.entity';
+import { ConsumptionSheetsService } from 'src/consumption-sheets/consumption-sheets.service';
 
 @Injectable()
 export class ReportsService {
@@ -13,8 +14,7 @@ export class ReportsService {
     private readonly printer: PrinterService,
     @InjectRepository(Patient)
     private readonly patientRepository: Repository<Patient>,
-    @InjectRepository(ConsumptionSheet)
-    private consumptionSheetRepository: Repository<ConsumptionSheet>,
+    private readonly consumptionSheetService: ConsumptionSheetsService,
   ) {}
 
   async getData(): Promise<Patient[]> {
@@ -29,16 +29,7 @@ export class ReportsService {
 
   async getPatientReport(consumptionSheetId: number) {
     // get the information from the consumption sheet along with its relationships
-    const consumptionSheet = await this.consumptionSheetRepository.findOne({
-      where: { id: consumptionSheetId },
-      relations: [
-        'patient',
-        'room',
-        'consumptions',
-        'consumptions.product',
-        'consumptions.product.category',
-      ],
-    });
+    const consumptionSheet = await this.consumptionSheetService.findOneIncludingDeleted(consumptionSheetId)
 
     // Check if the consumption sheet was found.
     if (!consumptionSheet) {

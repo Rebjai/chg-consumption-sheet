@@ -69,6 +69,44 @@ export class ConsumptionSheetsService {
       throw new NotFoundException("Consumption sheet not found");
     }
   }
+  async findOneIncludingDeleted(id: number) {
+    try {
+      const metadata = this.consumptionSheetRepository.metadata;
+      const directRelations = metadata.relations.map(relation => relation.propertyPath);
+      const extraRelations = ['consumptions.product.category'];
+      const relations = [...directRelations, ...extraRelations];
+
+      const consumptionSheet = await this.consumptionSheetRepository.findOne({
+        where: { id },
+        relations: relations,
+        withDeleted: true,
+      });
+
+      if (!consumptionSheet) {
+        throw new NotFoundException("Consumption sheet not found");
+      }
+
+      // Ensure consumptions is a real array
+      consumptionSheet.consumptions = Array.isArray(consumptionSheet.consumptions)
+      ? consumptionSheet.consumptions
+      : Object.values(consumptionSheet.consumptions || {});
+
+      // Prevent reduce error if consumptions is empty or undefined
+      if (!Array.isArray(consumptionSheet.consumptions) || consumptionSheet.consumptions.length === 0) {
+        consumptionSheet.total = 0;
+      } else {
+        // Ensure every item has a valid total
+        consumptionSheet.total = consumptionSheet.consumptions.reduce(
+          (total, val) => total + (val.total ?? 0),
+          0
+        );
+      }
+      return consumptionSheet;
+    } catch (error) {
+      throw new NotFoundException("Consumption sheet not found");
+    }
+
+  }
 
   async update(id: number, updateConsumptionSheetDto: UpdateConsumptionSheetDto) {
     const consumptionSheet = await this.consumptionSheetRepository.findOneBy({ id })
