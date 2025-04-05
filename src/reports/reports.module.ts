@@ -6,11 +6,13 @@ import { ConsumptionDetail } from '../consumption-details/entities/consumption-d
 import { Patient } from '../patients/entities/patient.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConsumptionSheet } from '../consumption-sheets/entities/consumption-sheet.entity';
+import { ConsumptionSheetsModule } from 'src/consumption-sheets/consumption-sheets.module';
 
 @Module({
   controllers: [ReportsController],
   providers: [ReportsService],
   imports: [
+    ConsumptionSheetsModule,
     PrinterModule,
     TypeOrmModule.forFeature([Patient, ConsumptionDetail, ConsumptionSheet]),
   ],
