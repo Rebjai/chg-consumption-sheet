@@ -1,7 +1,8 @@
 import { ProductSatCategory } from './../../../product-sat-category/entities/product-sat-category.entity';
 import { DataSource } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
-import * as  csv from "csvtojson";
+import csv from "csvtojson/index";
+
 
 export class ProductSatCategorySeeder implements Seeder {
     public async run(factory: Factory, connection: DataSource): Promise<void> {
