@@ -1,6 +1,3 @@
-import { UserRole } from '../users/enums/user-role.enum';
-import { StaffService } from './../staff/staff.service';
-import { ProductsService } from './../products/products.service';
 import { ConsumptionSheetsService } from './../consumption-sheets/consumption-sheets.service';
 import { ConsumptionDetail } from './entities/consumption-detail.entity';
 import { ForbiddenException, Inject, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
@@ -10,6 +7,9 @@ import { UpdateConsumptionDetailDto } from './dto/update-consumption-detail.dto'
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
 import { AreasService } from 'src/areas/areas.service';
+import { ProductsService } from 'src/inventory/products/products.service';
+import { StaffService } from 'src/staff/staff.service';
+import UserRole from 'src/users/enums/user-role.enum';
 
 @Injectable()
 export class ConsumptionDetailsService {

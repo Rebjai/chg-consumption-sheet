@@ -1,14 +1,13 @@
-import { User } from './../users/entities/user.entity';
-import { UserRole } from 'src/users/enums/user-role.enum';
-import { Roles } from './../common/decorators/roles.decorator';
-import { ApiResponseInterceptor } from './../common/interceptors/api-response.interceptor';
-import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, Put, Request } from '@nestjs/common';
 import { ConsumptionDetailsService } from './consumption-details.service';
 import { CreateConsumptionDetailDto } from './dto/create-consumption-detail.dto';
 import { UpdateConsumptionDetailDto } from './dto/update-consumption-detail.dto';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ApiResponseInterceptor } from 'src/common/interceptors/api-response.interceptor';
+import UserRole from 'src/users/enums/user-role.enum';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @ApiTags('consumption-details')
 @UseGuards(JwtAuthGuard, RolesGuard)

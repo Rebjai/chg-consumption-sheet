@@ -1,7 +1,7 @@
-import { ProductSatCategory } from './../../../product-sat-category/entities/product-sat-category.entity';
 import { DataSource } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
 import csv from "csvtojson/index";
+import { ProductSatCategory } from "src/inventory/product-sat-category/entities/product-sat-category.entity";
 
 
 export class ProductSatCategorySeeder implements Seeder {

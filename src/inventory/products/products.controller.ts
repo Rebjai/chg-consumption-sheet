@@ -1,12 +1,12 @@
-import { ApiResponseInterceptor } from './../common/interceptors/api-response.interceptor';
-import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
-import { PaginationDto } from './../common/dto/pagination.dto';
 import { ProductQueryDto } from './dto/product-query.dto';
 import { Controller, Get, Post, Body, Param, Delete, Query, UseGuards, UseInterceptors, Put, StreamableFile, Header } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ApiResponseInterceptor } from 'src/common/interceptors/api-response.interceptor';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @ApiTags('products')
 @UseGuards(JwtAuthGuard)

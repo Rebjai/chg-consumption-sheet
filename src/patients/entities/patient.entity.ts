@@ -1,4 +1,4 @@
-import { ConsumptionSheet } from 'src/consumption-sheets/entities/consumption-sheet.entity';
+import { ConsumptionSheet } from 'src/consumption/consumption-sheets/entities/consumption-sheet.entity';
 import { CHGBaseEntity } from './../../common/entities/chgBaseEntity.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
 @Entity()

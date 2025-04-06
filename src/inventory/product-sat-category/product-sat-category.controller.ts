@@ -1,10 +1,10 @@
-import { PaginationDto } from './../common/dto/pagination.dto';
-import { ApiResponseInterceptor } from './../common/interceptors/api-response.interceptor';
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Query } from '@nestjs/common';
 import { ProductSatCategoryService } from './product-sat-category.service';
 import { CreateProductSatCategoryDto } from './dto/create-product-sat-category.dto';
 import { UpdateProductSatCategoryDto } from './dto/update-product-sat-category.dto';
 import { ProductSatCategoryQueryDto } from './dto/product-sat-category-query.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ApiResponseInterceptor } from 'src/common/interceptors/api-response.interceptor';
 
 @Controller('product-sat-category')
 @UseInterceptors(ApiResponseInterceptor)

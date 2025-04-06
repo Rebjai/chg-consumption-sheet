@@ -1,10 +1,10 @@
-import { Area } from './../../areas/entities/area.entity';
-import { Product } from './../../products/entities/product.entity';
-import { CHGBaseEntity } from './../../common/entities/chgBaseEntity.entity';
-import { ConsumptionSheet } from './../../consumption-sheets/entities/consumption-sheet.entity';
-import { Staff } from './../../staff/entities/staff.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { CHGBaseEntity } from 'src/common/entities/chgBaseEntity.entity';
+import { ConsumptionSheet } from 'src/consumption/consumption-sheets/entities/consumption-sheet.entity';
+import { Area } from 'src/areas/entities/area.entity';
+import { Product } from 'src/inventory/products/entities/product.entity';
+import { Staff } from 'src/staff/entities/staff.entity';
 
 @Entity()
 export class ConsumptionDetail extends CHGBaseEntity{

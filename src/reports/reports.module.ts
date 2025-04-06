@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { ReportsController } from './reports.controller';
 import { PrinterModule } from '../printer/printer.module';
-import { ConsumptionDetail } from '../consumption-details/entities/consumption-detail.entity';
 import { Patient } from '../patients/entities/patient.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConsumptionSheet } from '../consumption-sheets/entities/consumption-sheet.entity';
-import { ConsumptionSheetsModule } from 'src/consumption-sheets/consumption-sheets.module';
+import { ConsumptionSheetsModule } from 'src/consumption/consumption-sheets/consumption-sheets.module';
+import { ConsumptionDetail } from 'src/consumption/consumption-details/entities/consumption-detail.entity';
+import { ConsumptionSheet } from 'src/consumption/consumption-sheets/entities/consumption-sheet.entity';
 
 @Module({
   controllers: [ReportsController],

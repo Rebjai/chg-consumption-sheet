@@ -5,8 +5,7 @@ import { Patient } from '../patients/entities/patient.entity';
 import { billReport } from './documents/bill.report';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConsumptionSheet } from '../consumption-sheets/entities/consumption-sheet.entity';
-import { ConsumptionSheetsService } from 'src/consumption-sheets/consumption-sheets.service';
+import { ConsumptionSheetsService } from 'src/consumption/consumption-sheets/consumption-sheets.service';
 
 @Injectable()
 export class ReportsService {

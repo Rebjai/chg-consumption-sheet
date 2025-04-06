@@ -1,5 +1,5 @@
-import { ProductSatCategory } from 'src/product-sat-category/entities/product-sat-category.entity';
-import { CHGBaseEntity } from './../../common/entities/chgBaseEntity.entity';
+import { CHGBaseEntity } from 'src/common/entities/chgBaseEntity.entity';
+import { ProductSatCategory } from 'src/inventory/product-sat-category/entities/product-sat-category.entity';
 import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn, OneToOne, ManyToOne } from 'typeorm';
 
 @Entity()

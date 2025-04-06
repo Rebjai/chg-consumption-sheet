@@ -1,5 +1,4 @@
 import { ProductSatCategoryQueryDto } from './dto/product-sat-category-query.dto';
-import { PaginationDto } from './../common/dto/pagination.dto';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
@@ -9,6 +8,7 @@ import { CreateProductSatCategoryDto } from './dto/create-product-sat-category.d
 import { UpdateProductSatCategoryDto } from './dto/update-product-sat-category.dto';
 import { ProductSatCategory } from './entities/product-sat-category.entity';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class ProductSatCategoryService {

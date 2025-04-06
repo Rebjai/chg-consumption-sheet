@@ -1,10 +1,9 @@
-import { ProductSatCategory } from './../../../product-sat-category/entities/product-sat-category.entity';
-import { Product } from './../../../products/entities/product.entity';
 import { Connection, DataSource } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
 import { hash, hashSync } from 'bcrypt';
 import UserRole from 'src/users/enums/user-role.enum';
 import csv from "csvtojson/index";
+import { Product } from "src/inventory/products/entities/product.entity";
 
 
 export class ProductsSeeder implements Seeder {

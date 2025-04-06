@@ -1,7 +1,4 @@
 import { plainToInstance } from 'class-transformer';
-import { RoomStatus } from './../rooms/enums/room-status.enum';
-import { PatientsService } from './../patients/patients.service';
-import { RoomsService } from './../rooms/rooms.service';
 import { Inject, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
@@ -10,6 +7,9 @@ import { CreateConsumptionSheetDto } from './dto/create-consumption-sheet.dto';
 import { UpdateConsumptionSheetDto } from './dto/update-consumption-sheet.dto';
 import { ConsumptionSheet } from './entities/consumption-sheet.entity';
 import * as XLSX from 'xlsx';
+import { RoomsService } from 'src/rooms/rooms.service';
+import { PatientsService } from 'src/patients/patients.service';
+import { RoomStatus } from 'src/rooms/enums/room-status.enum';
 
 @Injectable()
 export class ConsumptionSheetsService {

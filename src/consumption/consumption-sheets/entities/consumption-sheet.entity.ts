@@ -1,8 +1,8 @@
+import { Patient } from 'src/patients/entities/patient.entity';
 import { ConsumptionDetail } from './../../consumption-details/entities/consumption-detail.entity';
-import { Room } from './../../rooms/entities/room.entity';
-import { CHGBaseEntity } from './../../common/entities/chgBaseEntity.entity';
-import { Patient } from './../../patients/entities/patient.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, OneToMany, UpdateDateColumn, CreateDateColumn, JoinColumn } from 'typeorm';
+import { CHGBaseEntity } from 'src/common/entities/chgBaseEntity.entity';
+import { Room } from 'src/rooms/entities/room.entity';
 
 @Entity()
 export class ConsumptionSheet extends CHGBaseEntity {

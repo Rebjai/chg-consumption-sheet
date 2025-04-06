@@ -1,11 +1,7 @@
 import { Area } from 'src/areas/entities/area.entity';
-import { ProductSatCategory } from 'src/product-sat-category/entities/product-sat-category.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { ConsumptionDetail } from "src/consumption-details/entities/consumption-detail.entity"
-import { ConsumptionSheet } from "src/consumption-sheets/entities/consumption-sheet.entity"
 import { Patient } from "src/patients/entities/patient.entity"
-import { Product } from "src/products/entities/product.entity"
 import { Room } from "src/rooms/entities/room.entity"
 import { Staff } from "src/staff/entities/staff.entity"
 import { User } from "src/users/entities/user.entity"
@@ -13,6 +9,10 @@ import { DatabaseType, DataSourceOptions } from "typeorm"
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { Product } from 'src/inventory/products/entities/product.entity';
+import { ConsumptionDetail } from 'src/consumption/consumption-details/entities/consumption-detail.entity';
+import { ConsumptionSheet } from 'src/consumption/consumption-sheets/entities/consumption-sheet.entity';
+import { ProductSatCategory } from 'src/inventory/product-sat-category/entities/product-sat-category.entity';
 
 const ormConfig: DataSourceOptions | TypeOrmModuleOptions = {
     type: 'postgres',
