@@ -1,4 +1,4 @@
-import { Area } from 'src/areas/entities/area.entity';
+import { Area } from 'src/areas/domain/entities/area.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Patient } from "src/patients/entities/patient.entity"

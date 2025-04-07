@@ -1,4 +1,4 @@
-import { Area } from './../../areas/entities/area.entity';
+import { Area } from '../../areas/domain/entities/area.entity';
 import { RoomStatus } from '../enums/room-status.enum';
 import { CHGBaseEntity } from './../../common/entities/chgBaseEntity.entity';
 import { Entity, Column, OneToMany, ManyToOne } from 'typeorm';

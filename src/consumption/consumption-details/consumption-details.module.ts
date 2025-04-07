@@ -8,10 +8,16 @@ import { AreasModule } from 'src/areas/areas.module';
 import { ProductsModule } from 'src/inventory/products/products.module';
 import { StaffModule } from 'src/staff/staff.module';
 import { UsersModule } from 'src/users/users.module';
+import { GetAreaByIdHandler } from 'src/areas/application/handlers/queries/get-area-by-id.handler';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ConsumptionDetail]), ConsumptionSheetsModule, ProductsModule, StaffModule, UsersModule, AreasModule],
+  imports: [TypeOrmModule.forFeature([ConsumptionDetail]),
+  CqrsModule,
+  ConsumptionSheetsModule, ProductsModule, StaffModule, UsersModule, AreasModule],
   controllers: [ConsumptionDetailsController],
-  providers: [ConsumptionDetailsService],
+  providers: [
+    ConsumptionDetailsService,
+  ],
 })
 export class ConsumptionDetailsModule {}

@@ -2,7 +2,7 @@ import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { CHGBaseEntity } from 'src/common/entities/chgBaseEntity.entity';
 import { ConsumptionSheet } from 'src/consumption/consumption-sheets/entities/consumption-sheet.entity';
-import { Area } from 'src/areas/entities/area.entity';
+import { Area } from 'src/areas/domain/entities/area.entity';
 import { Product } from 'src/inventory/products/entities/product.entity';
 import { Staff } from 'src/staff/entities/staff.entity';
 

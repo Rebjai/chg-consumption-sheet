@@ -6,10 +6,11 @@ import { CreateConsumptionDetailDto } from './dto/create-consumption-detail.dto'
 import { UpdateConsumptionDetailDto } from './dto/update-consumption-detail.dto';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
-import { AreasService } from 'src/areas/areas.service';
 import { ProductsService } from 'src/inventory/products/products.service';
 import { StaffService } from 'src/staff/staff.service';
 import UserRole from 'src/users/enums/user-role.enum';
+import { QueryBus } from '@nestjs/cqrs';
+import { GetAreaByIdQuery } from 'src/areas/application/queries/get-area-by-id.query';
 
 @Injectable()
 export class ConsumptionDetailsService {
@@ -19,7 +20,7 @@ export class ConsumptionDetailsService {
     @Inject(ProductsService) private productsService: ProductsService,
     @Inject(StaffService) private staffService: StaffService,
     @Inject(UsersService) private usersService: UsersService,
-    @Inject(AreasService) private areasService: AreasService,
+    private readonly queryBus: QueryBus,
   ) {
   }
 
@@ -33,7 +34,8 @@ export class ConsumptionDetailsService {
     const user = await this.usersService.findOne(createConsumptionDetailDto.user_id)
     const consumptionDetail = new ConsumptionDetail()
     if (createConsumptionDetailDto.area_id) {
-      const area = await this.areasService.findOne(createConsumptionDetailDto.area_id)
+      // const area = await this.areasService.findOne(createConsumptionDetailDto.area_id)
+      const area = await this.queryBus.execute(new GetAreaByIdQuery(createConsumptionDetailDto.area_id))
       consumptionDetail.area = area
     }
     consumptionDetail.consumption_sheet = consumptionSheet
