@@ -22,6 +22,7 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtAuthGuard)
   registerUser(@Body() dto: CreateUserDto): Promise<Tokens> {
     return this.authService.register(dto);
   }
