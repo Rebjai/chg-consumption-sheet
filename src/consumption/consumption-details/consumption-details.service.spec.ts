@@ -1,8 +1,8 @@
-import { StaffService } from './../staff/staff.service';
-import { ProductsService } from './../products/products.service';
 import { ConsumptionSheetsService } from './../consumption-sheets/consumption-sheets.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConsumptionDetailsService } from './consumption-details.service';
+import { ProductsService } from 'src/inventory/products/products.service';
+import { StaffService } from 'src/staff/staff.service';
 
 describe('ConsumptionDetailsService', () => {
   let service: ConsumptionDetailsService;

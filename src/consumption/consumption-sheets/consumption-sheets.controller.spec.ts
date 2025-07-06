@@ -1,10 +1,10 @@
-import { PatientsService } from './../patients/patients.service';
-import { RoomsService } from './../rooms/rooms.service';
 import { ConsumptionSheet } from './entities/consumption-sheet.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConsumptionSheetsController } from './consumption-sheets.controller';
 import { ConsumptionSheetsService } from './consumption-sheets.service';
+import { RoomsService } from 'src/rooms/rooms.service';
+import { PatientsService } from 'src/patients/patients.service';
 
 describe('ConsumptionSheetsController', () => {
   let controller: ConsumptionSheetsController;

@@ -8,7 +8,12 @@ describe('ProductSatCategoryController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ProductSatCategoryController],
-      providers: [ProductSatCategoryService],
+      providers: [ProductSatCategoryService,
+        {
+          provide: 'ProductSatCategoryRepository',
+          useValue: {},  // un mock simple o el repo real
+        },
+      ],
     }).compile();
 
     controller = module.get<ProductSatCategoryController>(ProductSatCategoryController);

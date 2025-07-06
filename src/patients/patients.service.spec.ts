@@ -6,35 +6,56 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { PatientsService } from './patients.service';
 
+import { paginate } from 'nestjs-typeorm-paginate';
+jest.mock('nestjs-typeorm-paginate');
+
 describe('PatientsService', () => {
   let service: PatientsService;
   const patients: Patient[] = [
     {
       id: 1,
       name: 'Jane',
-      firstSurname: 'Doe',
-      secondSurname: 'Deo',
+      first_surname: 'Doe',
+      second_surname: 'Deo',
       active: true,
-      dateOfBirth: new Date(1990, 12, 13),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      date_of_birth: new Date(1990, 12, 13),
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     {
       id: 1,
       name: 'John',
-      firstSurname: 'Doe',
-      secondSurname: 'Deo',
+      first_surname: 'Doe',
+      second_surname: 'Deo',
       active: true,
-      dateOfBirth: new Date(1990, 12, 13),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      date_of_birth: new Date(1990, 12, 13),
+      created_at: new Date(),
+      updated_at: new Date(),
     },
   ]
   const patientsRepositoryMock = {
     save: jest.fn().mockImplementation((x: Patient) => x),
     findOneBy: jest.fn().mockImplementation(({ id }) => patients.find(val => val.id == id) as Patient),
-    find: jest.fn().mockImplementation((options) => patients)
+    find: jest.fn().mockImplementation((options) => patients),
+    createQueryBuilder: jest.fn().mockReturnValue({
+      where: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      getMany: jest.fn().mockResolvedValue(patients),
+      getCount: jest.fn().mockResolvedValue(patients.length),
+      skip: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
+      leftJoinAndSelect: jest.fn().mockReturnThis(),
+    }),
   }
+  const paginatedResult = {
+    items: [],
+    meta: {
+      itemCount: 0,
+      totalItems: 0,
+      totalPages: 0,
+      currentPage: 1,
+    },
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -43,6 +64,7 @@ describe('PatientsService', () => {
     }).compile();
 
     service = module.get<PatientsService>(PatientsService);
+    (paginate as jest.Mock).mockResolvedValue(paginatedResult);
   });
 
   it('should be defined', () => {
@@ -128,7 +150,7 @@ describe('PatientsService', () => {
 
   it('should FIND ALL patients', async () => {
     const found = await service.findAll()
-    expect(patientsRepositoryMock.find).toHaveBeenCalled()
+    expect(patientsRepositoryMock.createQueryBuilder).toHaveBeenCalled()
   })
 
   it('should FIND ONE patient', async () => {

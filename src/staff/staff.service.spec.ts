@@ -12,19 +12,30 @@ describe('StaffService', () => {
     {
       id: 1,
       name: 'Enfermera',
-      firstSurname: 'Appat',
-      secondSurname: 'Apmat',
-      dateOfBirth: new Date(1990, 1, 20),
-      jobTitle: 'nurse',
-      telephoneNumber: '9512223344',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      first_surname: 'Appat',
+      second_surname: 'Apmat',
+      date_of_birth: new Date(1990, 1, 20),
+      job_title: 'nurse',
+      telephone_number: '9512223344',
+      created_at: new Date(),
+      updated_at: new Date(),
     }
   ]
   const staffRepositoryMock = {
     save: jest.fn().mockImplementation((staff: Staff) => staff),
     findOneBy: jest.fn().mockImplementation(({ id }) => staffList.find(val => val.id == id) as Staff),
-    find: jest.fn().mockImplementation((options) => staffList)
+    find: jest.fn().mockImplementation((options) => staffList),
+    findOne: jest.fn().mockImplementation(({ where }) => {
+      if (where.id) {
+        const staff = staffList.find(e => e.id == where.id);
+        return staff ? { ...staff } : null;
+      }
+      if (where.name) {
+        const staff = staffList.find(e => e.name == where.name);
+        return staff ? { ...staff } : null;
+      }
+    }),
+    count: jest.fn().mockResolvedValue(staffList.length),
   }
 
   beforeEach(async () => {
@@ -86,7 +97,7 @@ describe('StaffService', () => {
       telephone_number: '9512223355'
     }
     const found = await service.update(1, newStaffData)
-    expect(staffRepositoryMock.findOneBy).toHaveBeenCalled()
+    expect(staffRepositoryMock.findOne).toHaveBeenCalled()
     expect(staffRepositoryMock.save).toHaveBeenCalledTimes(2)
   })
   it('should NOT UPDATE a staff entity', async () => {

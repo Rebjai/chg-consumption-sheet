@@ -1,16 +1,17 @@
 import { UpdateConsumptionSheetDto } from './dto/update-consumption-sheet.dto';
 import { UnprocessableEntityException, NotFoundException } from '@nestjs/common';
-import { RoomStatus } from './../rooms/enums/room-status.enum';
-import { RoomType } from '../rooms/enums/room-type.enum';
-import { Patient } from './../patients/entities/patient.entity';
-import { Room } from './../rooms/entities/room.entity';
-import { RoomsService } from './../rooms/rooms.service';
-import { PatientsService } from './../patients/patients.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConsumptionSheetsService } from './consumption-sheets.service';
 import { CreateConsumptionSheetDto } from './dto/create-consumption-sheet.dto';
 import { ConsumptionSheet } from './entities/consumption-sheet.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Room } from 'src/rooms/entities/room.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
+import { RoomStatus } from 'src/rooms/enums/room-status.enum';
+import { RoomType } from 'src/rooms/enums/room-type.enum';
+import { Area } from 'src/areas/domain/entities/area.entity';
+import { RoomsService } from 'src/rooms/rooms.service';
+import { PatientsService } from 'src/patients/patients.service';
 
 describe('ConsumptionSheetsService', () => {
   let service: ConsumptionSheetsService;
@@ -19,32 +20,33 @@ describe('ConsumptionSheetsService', () => {
     id: 1, name: '420',
     status: RoomStatus.AVAILABLE,
     type: RoomType.CLASSIC,
-    createdAt: now,
-    updatedAt: now,
+    area: new Area(),
+    created_at: now,
+    updated_at: now,
   }]
   const patients: Patient[] = [{
     id: 1,
     name: 'Martha',
-    firstSurname: 'Appat',
-    secondSurname: 'Apmat',
-    dateOfBirth: new Date(1990, 1, 1),
-    createdAt: now,
-    updatedAt: now,
+    first_surname: 'Appat',
+    second_surname: 'Apmat',
+    date_of_birth: new Date(1990, 1, 1),
+    created_at: now,
+    updated_at: now,
     active: true
   }]
   const consumptionSheets: ConsumptionSheet[] = [
     {
       id: 1,
-      patientId: 1,
-      roomId: 1,
+      patient_id: 1,
+      room_id: 1,
       doctor: 'Cesar',
       diagnosis: 'Cesárea',
-      admissionDate: new Date(),
+      admission_date: new Date(),
       patient: patients[0],
       room: rooms[0],
-      createdAt: new Date(),
-      dischargeDate: new Date(),
-      updatedAt: new Date()
+      created_at: new Date(),
+      discharge_date: new Date(),
+      updated_at: new Date()
     }
   ]
   const patientsServiceMock = {

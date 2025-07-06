@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { PaginationDto } from './../common/dto/pagination.dto';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -7,6 +8,10 @@ import { RoomsService } from './rooms.service';
 import { RoomStatus } from './enums/room-status.enum';
 import { RoomType } from './enums/room-type.enum';
 import { BadRequestException, HttpException, NotFoundException } from '@nestjs/common';
+import { paginate } from 'nestjs-typeorm-paginate';
+
+
+jest.mock('nestjs-typeorm-paginate');
 
 
 describe('RoomsService', () => {
@@ -17,16 +22,26 @@ describe('RoomsService', () => {
       name: '204',
       status: RoomStatus.AVAILABLE,
       type: RoomType.CLASSIC,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      created_at: new Date(),
+      updated_at: new Date(),
+      area: null,
     }
   ]
   const roomsRepositoryMock = {
     save: jest.fn().mockImplementation((room: Room) => room),
     findOneBy: jest.fn().mockImplementation(({ id }) => rooms.find(val => val.id == id) as Room),
-    find: jest.fn().mockImplementation((options) => rooms)
-  }
+    find: jest.fn().mockImplementation((options) => rooms),
 
+  }
+  const paginatedResult = {
+    items: [],
+    meta: {
+      itemCount: 0,
+      totalItems: 0,
+      totalPages: 0,
+      currentPage: 1,
+    },
+  };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -39,6 +54,8 @@ describe('RoomsService', () => {
     }).compile();
 
     service = module.get<RoomsService>(RoomsService);
+    (paginate as jest.Mock).mockResolvedValue(paginatedResult);
+
   });
 
   it('should be defined', () => {
@@ -49,6 +66,7 @@ describe('RoomsService', () => {
       name: '204',
       status: RoomStatus.AVAILABLE,
       type: RoomType.CLASSIC,
+      area_id: 1,
     }
     const created = await service.create(newRoomData)
     expect(created).toBeInstanceOf(Room)
@@ -59,6 +77,7 @@ describe('RoomsService', () => {
       name: '',
       status: RoomStatus.AVAILABLE,
       type: RoomType.CLASSIC,
+      area_id: null,
     }
     try {
       const created = await service.create(newRoomData)
@@ -74,6 +93,7 @@ describe('RoomsService', () => {
       name: '204',
       status: RoomStatus.AVAILABLE,
       type: RoomType.CLASSIC,
+      area_id: null,
     }
     const found = await service.update(1, newRoomData)
     expect(roomsRepositoryMock.findOneBy).toHaveBeenCalled()
@@ -84,6 +104,7 @@ describe('RoomsService', () => {
       name: '',
       status: RoomStatus.AVAILABLE,
       type: RoomType.CLASSIC,
+      area_id: null,
     }
     try {
       const found = await service.update(1, newRoomData)
@@ -107,13 +128,15 @@ describe('RoomsService', () => {
 
   it('should FIND ALL rooms', async () => {
     const found = await service.findAll({})
-    expect(roomsRepositoryMock.find).toHaveBeenCalledWith({ where: {}, skip: 0, take: 10 })
+    // { where: {}, skip: 0, take: 10 }
+    expect(paginate).toHaveBeenCalledWith(roomsRepositoryMock, new PaginationDto())
   })
   it('should FIND ALL rooms, pagination', async () => {
     const pagination = new PaginationDto()
-    pagination.skip = 10
+    pagination.page = 10
     const found = await service.findAll({}, pagination)
-    expect(roomsRepositoryMock.find).toHaveBeenCalledWith({ where: {}, skip: 10, take: 10 })
+
+    expect(paginate).toHaveBeenCalledWith(roomsRepositoryMock, pagination)
   })
   it('should FIND ONE room by id', async () => {
     const found = await service.findOne(1)

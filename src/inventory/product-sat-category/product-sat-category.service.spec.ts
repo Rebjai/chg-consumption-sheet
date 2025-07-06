@@ -6,7 +6,13 @@ describe('ProductSatCategoryService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ProductSatCategoryService],
+      providers: [
+        ProductSatCategoryService,
+        {
+          provide: 'ProductSatCategoryRepository',
+          useValue: {},  // Mock or real repository can be used here
+        },
+      ],
     }).compile();
 
     service = module.get<ProductSatCategoryService>(ProductSatCategoryService);
