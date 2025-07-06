@@ -34,7 +34,7 @@
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.0",
     "@nestjs/core": "^9.0.0",
-    "@nestjs/cqrs": "^11.0.3",
+    "@nestjs/cqrs": "^9.0.4",
     "@nestjs/jwt": "^10.0.1",
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^9.0.1",
@@ -59,7 +59,6 @@
     "rxjs": "^7.2.0",
     "typeorm": "^0.3.11",
     "typeorm-naming-strategies": "^4.1.0",
-    "typeorm-seeding": "^1.6.1",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
